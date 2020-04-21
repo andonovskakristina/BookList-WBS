@@ -1,0 +1,37 @@
+.dropdown-heading {
+    text-align: left;
+}
+
+.select-item {
+    text-align: start;
+}
+
+.gray {
+    color: #495057 !important;
+}
+
+input {
+    font-size: 1rem !important;
+}
+
+span {
+    text-align: start;
+}
+
+.react-dropdown-select-item-selected {
+    background-color: #c4c3c2 !important;
+}
+
+.e1l4eby50 {
+    background-color: #c4c3c2 !important;
+
+}
+
+.react-dropdown-select-option-label .react-dropdown-select-option-remove {
+    background-color: #c4c3c2 !important;
+}
+
+.react-dropdown-select-item:hover {
+    background-color: #f5f1f0 !important;
+    color: black !important;
+}

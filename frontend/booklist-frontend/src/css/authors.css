@@ -1,0 +1,7 @@
+#btns {
+    display: none;
+}
+
+#proba:hover #btns {
+    display: inline-block;
+}
