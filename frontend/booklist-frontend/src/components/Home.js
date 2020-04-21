@@ -8,29 +8,31 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            books: [],
-            bookNumberPages: [],
+            books: []
+            /*bookNumberPages: [],
             bookReviews: [],
             genres: [],
-            numberBooks: []
+            numberBooks: []*/
         }
     }
 
     componentDidMount() {
         this.fetchBooks();
-        this.fetchGenres();
+        //this.fetchGenres();
     }
 
     fetchBooks = () => {
         axios.get(`http://localhost:8080/api/books/allBooks`)
             .then(response => {
                 console.log(response);
+                console.log("response");
                 this.setState({ books: response.data,
-                    bookNumberPages: response.data.map(book => book.numberPages),
-                    bookReviews: response.data.map(book => book.review)
+                   /// bookNumberPages: response.data.map(book => book.numberPages),
+                 //   bookReviews: response.data.map(book => book.review)
                 });
             })
             .catch(error => console.log(error.response))
+     ///   console.log(this.state.books);
     };
 
     fetchGenres = () => {
@@ -50,13 +52,10 @@ class Home extends Component {
                      style={{width: "100%"}}
                      className={"mb-5"}
                 />
-                <div className={"my-5"}>
-                    <MyBarChart
-                        genres={this.state.genres}
-                        books={this.state.books}
-                    />
+
+
+                <div className={"bg-light"}>{this.state.books.ISBN}
                 </div>
-                <div>{this.state.books}</div>
             </div>
         )
     };

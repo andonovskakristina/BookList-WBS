@@ -10,18 +10,17 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookServiceImpl implements BookService {
+    @Autowired
+    BookRepository bookRepository;
     /*private BookRepository bookRepository;
 
     public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }*/
-
-    @Autowired
-    BookRepository bookRepository;
 /*
     @Override
     public Book create(Book book) {
@@ -43,26 +42,62 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 */
+
+public String formatString(String string){
+     String[] arr = string.split("/");
+     string = arr[arr.length-1].replace("/"," ");
+     string.trim();
+    return string;
+}
+
     @Override
     public List<Book> getAllBooks() {
         ResultSet rsBookNames = bookRepository.findAllBookNames();
-        ResultSet rsAll = bookRepository.findAll();
-
+      ///  ResultSet rsAll = bookRepository.findAll();
+      //  ResultSet temp = rsAll;
+        List<Book> books = new ArrayList<>();
         while ( rsBookNames.hasNext() ) {
-            final QuerySolution qs = rsBookNames.next();
-            System.out.println(qs.get( "s" ));
-        }
+              final QuerySolution qs = rsBookNames.next();
+              if((qs.get("s")) != null) {
 
-        while ( rsAll.hasNext() ) {
+              String name = (qs.get("s")).toString();
+              String isbn = bookRepository.findISBN(name);
+              String author = bookRepository.findAuthor(name);
+              String genres = bookRepository.findGenres(name);
+
+              Book b = new Book(formatString(isbn),formatString(name),formatString(author),formatString(genres));
+                  books.add(b);
+                  //System.out.println(b.toString());
+              bookRepository.closeConnection("qeISBN");
+              bookRepository.closeConnection("qeAuthor");
+              bookRepository.closeConnection("qeGenres");
+
+              }
+            else
+                {break;}
+          }
+         /*while ( temp.hasNext() ) {
+                final QuerySolution qs1 = temp.next();
+                if(qs1.get("s").toString().equals(name) && qs1.get("p").toString().equals("<http://dbpedia.org/ontology/isbn>"))
+                    isbn = qs1.get("o").toString();
+                else if(qs1.get("s").toString().equals(name) && qs1.get("p").toString().equals("<http://dbpedia.org/ontology/isbn>"))
+                    isbn = qs1.get("o").toString();
+                System.out.println(qs.get( "s" ) +
+                        "\n\t" + qs.get( "p" ) +
+                        "\n\t" + qs.get( "o" ));
+            }*/
+        /*while ( rsAll.hasNext() ) {
             final QuerySolution qs = rsAll.next();
             System.out.println(qs.get( "s" ) +
                     "\n\t" + qs.get( "p" ) +
                     "\n\t" + qs.get( "o" ));
-        }
-
+        }*/
         bookRepository.closeConnection("qeBookNames");
         bookRepository.closeConnection("qeAll");
-        return null;
+
+
+
+        return books;
     }
 
     @Override
@@ -72,20 +107,28 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id);
         return book;
     }
-/*
+
     @Override
     public Book getByBookTitle(String title) {
-        if(!bookRepository.existsBookByTitle(title))
+      return null;
+    }
+
+  /*   @Override
+    public Book getByBookTitle(String title) {
+        Book b = new Book();
+      if(!bookRepository.existsBookByTitle(title))
             throw new ApiException("Book doesn't exist");
         return bookRepository.getBookByTitle(title);
+       return  b;
     }
 
-    @Override
+ @Override
     public List<Book> getBooksWithPagesLessThan(int numberPages) {
-        return bookRepository.findAllWithLessPagesThan(numberPages);
+      //  return bookRepository.findAllWithLessPagesThan(numberPages);
+     return  null;
     }
 
-    @Override
+ @Override
     public Page<Book> getAllBooksByPage(int page, int size){
         Page<Book> result = this.bookRepository.findAll(PageRequest.of(page, size));
         return result;

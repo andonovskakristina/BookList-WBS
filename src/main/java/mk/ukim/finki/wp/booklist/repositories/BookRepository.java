@@ -8,11 +8,18 @@ import java.util.List;
 
 @Repository
 public interface BookRepository {
+
     void closeConnection(String qe);
 
     ResultSet findAll();
 
     ResultSet findAllBookNames();
+
+    String findISBN(String bookName);
+
+    String findAuthor(String bookName);
+
+    String findGenres(String bookName);
 
     boolean existsById(String id);
 

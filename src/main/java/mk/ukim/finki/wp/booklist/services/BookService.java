@@ -19,21 +19,19 @@ public interface BookService {
 
     Book get(String id);
 
-    /*Book getByBookTitle(String title);
+    Book getByBookTitle(String title);
 
-    List<Book> getBooksWithPagesLessThan(int numberPages);
+   // List<Book> getBooksWithPagesLessThan(int numberPages);
 
-    Page<Book> getAllBooksByPage(int page, int size);
+  ///  Page<Book> getAllBooksByPage(int page, int size);
 
-    List<Book> getAllBooksByNumberPagesBetween(int from, int to);
+  //  List<Book> getAllBooksByNumberPagesBetween(int from, int to);
 
-    Book markAsRead(String id);
+ //   Book markAsRead(String id);
 
-    Book updateFavourites(String id);
+  //  Book updateFavourites(String id);
 
-    Book addAComment(String id, String comment);
+  //  Book addAComment(String id, String comment);
 
-    int[] getMinMaxNumberPages();
-
-    Page<Book> getAllBooksByPageAndFilters(int[] AuthorIds, String[] genres, String search, int numberPagesFrom, int numberPagesTo, boolean read, boolean favourite, Pageable pageable);*/
+    //Page<Book> getAllBooksByPageAndFilters(int[] AuthorIds, String[] genres, String search, int numberPagesFrom, int numberPagesTo, boolean read, boolean favourite, Pageable pageable);*/
 }
