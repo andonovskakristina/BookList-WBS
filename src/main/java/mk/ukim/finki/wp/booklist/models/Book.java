@@ -24,29 +24,31 @@ public class Book {
 
     private String title;
 
-  //  private String publicationDate;
-
     private String author;
-
-//    private double review;
-
- //   private int numberPages;
-
-   // @Column(length = 2000)
-  //  private String description;
-
-   // private boolean read;
-
-   // private boolean favourite;
-
-  //  private String imageUrl;
 
     private String genres;
 
-    public Book(String isbn, String name, String author, String genres) {
+    private int numberPages;
+
+    private String publicationDate;
+
+    @Column(length = 2000)
+    private String description;
+
+    //private boolean read;
+
+    //private boolean favourite;
+
+    //private String imageUrl;
+
+    public Book(String isbn, String title, String author, String genres, int numberPages,
+                String publicationDate, String description) {
         this.ISBN =  isbn;
-        this.title= name;
-        this.author= author;
+        this.title = title;
+        this.author = author;
         this.genres = genres;
+        this.numberPages = numberPages;
+        this.publicationDate = publicationDate;
+        this.description = description;
     }
 }

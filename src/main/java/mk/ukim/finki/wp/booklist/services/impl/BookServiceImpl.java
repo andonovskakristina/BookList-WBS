@@ -43,59 +43,58 @@ public class BookServiceImpl implements BookService {
     }
 */
 
-public String formatString(String string){
-     String[] arr = string.split("/");
-     string = arr[arr.length-1].replace("/"," ");
-     string.trim();
-    return string;
-}
+    String formatString(String string){
+         String[] arr = string.split("/");
+         string = arr[arr.length-1].replace("/"," ");
+         string.trim();
+         return string;
+    }
+
+    int formatNumberPages(String numberPages) {
+        return Integer.parseInt(numberPages.split("\"")[0]);
+    }
+
+    String formatDate(String date) {
+        return date.split("\"")[0];
+    }
 
     @Override
     public List<Book> getAllBooks() {
         ResultSet rsBookNames = bookRepository.findAllBookNames();
-      ///  ResultSet rsAll = bookRepository.findAll();
-      //  ResultSet temp = rsAll;
+        //ResultSet rsAll = bookRepository.findAll();
+        //ResultSet temp = rsAll;
+
         List<Book> books = new ArrayList<>();
+
         while ( rsBookNames.hasNext() ) {
               final QuerySolution qs = rsBookNames.next();
               if((qs.get("s")) != null) {
 
-              String name = (qs.get("s")).toString();
-              String isbn = bookRepository.findISBN(name);
-              String author = bookRepository.findAuthor(name);
-              String genres = bookRepository.findGenres(name);
+                    String name = (qs.get("s")).toString();
+                    String isbn = bookRepository.findISBN(name);
+                    String author = bookRepository.findAuthor(name);
+                    String genres = bookRepository.findGenres(name);
+                    String numberPages = bookRepository.findNumberPages(name);
+                    String publicationDate = bookRepository.findPublicationDate(name);
+                    String description = bookRepository.findDescription(name);
 
-              Book b = new Book(formatString(isbn),formatString(name),formatString(author),formatString(genres));
-                  books.add(b);
-                  //System.out.println(b.toString());
-              bookRepository.closeConnection("qeISBN");
-              bookRepository.closeConnection("qeAuthor");
-              bookRepository.closeConnection("qeGenres");
+                    Book b = new Book(formatString(isbn), formatString(name), formatString(author),
+                    formatString(genres), formatNumberPages(numberPages), formatDate(publicationDate),
+                    description);
+                    books.add(b);
 
+                    bookRepository.closeConnection("qeISBN");
+                    bookRepository.closeConnection("qeAuthor");
+                    bookRepository.closeConnection("qeGenres");
+                    bookRepository.closeConnection("qeNumberPages");
+                    bookRepository.closeConnection("qePublicationDate");
+                    bookRepository.closeConnection("qeDescription");
               }
-            else
-                {break;}
-          }
-         /*while ( temp.hasNext() ) {
-                final QuerySolution qs1 = temp.next();
-                if(qs1.get("s").toString().equals(name) && qs1.get("p").toString().equals("<http://dbpedia.org/ontology/isbn>"))
-                    isbn = qs1.get("o").toString();
-                else if(qs1.get("s").toString().equals(name) && qs1.get("p").toString().equals("<http://dbpedia.org/ontology/isbn>"))
-                    isbn = qs1.get("o").toString();
-                System.out.println(qs.get( "s" ) +
-                        "\n\t" + qs.get( "p" ) +
-                        "\n\t" + qs.get( "o" ));
-            }*/
-        /*while ( rsAll.hasNext() ) {
-            final QuerySolution qs = rsAll.next();
-            System.out.println(qs.get( "s" ) +
-                    "\n\t" + qs.get( "p" ) +
-                    "\n\t" + qs.get( "o" ));
-        }*/
+              else break;
+        }
+
         bookRepository.closeConnection("qeBookNames");
-        bookRepository.closeConnection("qeAll");
-
-
+        //bookRepository.closeConnection("qeAll");
 
         return books;
     }

@@ -21,6 +21,12 @@ public interface BookRepository {
 
     String findGenres(String bookName);
 
+    String findNumberPages(String bookName);
+
+    String findPublicationDate(String bookName);
+
+    String findDescription(String bookName);
+
     boolean existsById(String id);
 
     Book findById(String id);

@@ -21,6 +21,9 @@ public class BookRepositoryImpl implements BookRepository {
     QueryExecution qeAuthor;
     QueryExecution qeISBN;
     QueryExecution qeGenres;
+    QueryExecution qePublicationDate;
+    QueryExecution qeNumberPages;
+    QueryExecution qeDescription;
 
     public void openConnection(String qe, String query) {
         if(qe.equals("qeAll"))
@@ -38,20 +41,35 @@ public class BookRepositoryImpl implements BookRepository {
         else if(qe.equals("qeGenres"))
             qeGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
+        else if(qe.equals("qeNumberPages"))
+            qeNumberPages = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+                    query);
+        else if(qe.equals("qePublicationDate"))
+            qePublicationDate = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+                    query);
+        else if(qe.equals("qeDescription"))
+            qeDescription = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+                    query);
     }
 
     @Override
     public void closeConnection(String qe) {
-       /* if(qe.equals("qeAll"))
-            qeAll.close();*/
-         if(qe.equals("qeBookNames"))
+        if(qe.equals("qeAll"))
+            qeAll.close();
+        else if(qe.equals("qeBookNames"))
             qeBookNames.close();
-      else if(qe.equals("qeAuthor"))
+        else if(qe.equals("qeAuthor"))
             qeAuthor.close();
         else if(qe.equals("qeISBN"))
             qeISBN.close();
         else if(qe.equals("qeGenres"))
             qeGenres.close();
+        else if(qe.equals("qeNumberPages"))
+            qeNumberPages.close();
+        else if(qe.equals("qePublicationDate"))
+            qePublicationDate.close();
+        else if(qe.equals("qeDescription"))
+            qeDescription.close();
     }
 
     @Override
@@ -66,7 +84,7 @@ public class BookRepositoryImpl implements BookRepository {
         openConnection("qeBookNames", "select ?s\n" +
                 "where {\n" +
                 "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/isbn>)\n" +
-                "}");
+                "} limit 30");
         ResultSet results = qeBookNames.execSelect();
 
         return results;
@@ -121,6 +139,57 @@ public class BookRepositoryImpl implements BookRepository {
         }
         catch (Exception e) {
             return "";
+        }
+    }
+
+    @Override
+    public String findNumberPages(String bookName) {
+        openConnection("qeNumberPages", "select ?o\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?s=<"+bookName+">&&?p=<http://dbpedia.org/ontology/numberOfPages>)\n" +
+                "}");
+        ResultSet results = qeNumberPages.execSelect();
+        try
+        {  QuerySolution qs = results.next();
+
+            return (qs.get("o")).toString();
+        }
+        catch (Exception e) {
+            return "";
+        }
+    }
+
+    @Override
+    public String findPublicationDate(String bookName) {
+        openConnection("qePublicationDate", "select ?o\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?s=<"+bookName+">&&?p=<http://dbpedia.org/property/releaseDate>)\n" +
+                "}");
+        ResultSet results = qePublicationDate.execSelect();
+        try
+        {  QuerySolution qs = results.next();
+
+            return (qs.get("o")).toString();
+        }
+        catch (Exception e) {
+            return "";
+        }
+    }
+
+    @Override
+    public String findDescription(String bookName) {
+        openConnection("qeDescription", "select ?o\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?s=<"+bookName+">&&?p=<http://dbpedia.org/ontology/abstract>)\n" +
+                "}");
+        ResultSet results = qeDescription.execSelect();
+        try
+        {  QuerySolution qs = results.next();
+
+            return (qs.get("o")).toString();
+        }
+        catch (Exception e) {
+            return "No book description.";
         }
     }
 

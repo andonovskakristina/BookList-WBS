@@ -30,9 +30,9 @@ class Home extends Component {
                    /// bookNumberPages: response.data.map(book => book.numberPages),
                  //   bookReviews: response.data.map(book => book.review)
                 });
+                console.log(this.state.books);
             })
             .catch(error => console.log(error.response))
-     ///   console.log(this.state.books);
     };
 
     fetchGenres = () => {
