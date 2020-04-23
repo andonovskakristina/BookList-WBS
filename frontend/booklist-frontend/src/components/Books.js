@@ -21,9 +21,7 @@ class Books extends Component {
             numberPagesFrom: 0,
             numberPagesTo: 0,
             genres: [],
-            sortBy: "",
-            read: props.read,
-            favourite: props.favourite
+            sortBy: ""
         }
     }
 
@@ -93,22 +91,6 @@ class Books extends Component {
             });
     };
 
-    markAsRead = (bookISBN) => {
-        axios.patch(`http://localhost:8080/api/books/${bookISBN}/markAsRead`)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => console.log(error.response))
-    };
-
-    markAsFavourite = (bookISBN) => {
-        axios.patch(`http://localhost:8080/api/books/${bookISBN}/updateFavourites`)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => console.log(error.response))
-    };
-
     handlePageClick = (pageChangedEvent) => {
         this.fetchBooks(pageChangedEvent.selected);
     };
@@ -143,16 +125,10 @@ class Books extends Component {
                   authorName={book.author}
                   review={book.review}
                   numberPages={book.numberPages}
-                  read={book.read}
-                  favourite={book.favourite}
                   genres={book.genres}
                   imageUrl={book.imageUrl}
                   key={book.isbn}
                   onDelete={this.onDeleteElement}
-                  markAsRead={this.markAsRead}
-                  markAsFavourite={this.markAsFavourite}
-                  isReadPage={this.state.read}
-                  isFavePage={this.state.favourite}
             />);
         return (
             <div className="container mt-4">

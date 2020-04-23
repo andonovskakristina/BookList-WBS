@@ -19,6 +19,8 @@ public interface BookRepository {
 
     String findAuthor(String bookName);
 
+    List<String> findAllDistinctAuthors();
+
     String findGenres(String bookName);
 
     String findNumberPages(String bookName);
@@ -31,5 +33,5 @@ public interface BookRepository {
 
     boolean existsById(String id);
 
-    Book findById(String id);
+    String findById(String id);
 }

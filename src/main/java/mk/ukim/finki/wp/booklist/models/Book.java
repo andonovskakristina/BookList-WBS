@@ -28,20 +28,16 @@ public class Book {
 
     private String genres;
 
-    private String numberPages;
+    private int numberPages;
 
     private String publicationDate;
 
     @Column(length = 2000)
     private String description;
 
-    //private boolean read;
-
-    //private boolean favourite;
-
     private String imageUrl;
 
-    public Book(String isbn, String title, String author, String genres, String numberPages,
+    public Book(String isbn, String title, String author, String genres, int numberPages,
                 String publicationDate, String description, String imageUrl) {
         this.ISBN =  isbn;
         this.title = title;

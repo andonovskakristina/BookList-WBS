@@ -74,11 +74,11 @@ public class BookApiController {
     public void deleteBook(@PathVariable String id){
         bookService.delete(id);
     }*/
-/*
+
     @GetMapping("/{id}")
     public Book getBook(@PathVariable String id){
         return bookService.get(id);
-    }*/
+    }
 
     @GetMapping("/allBooks")
     public List<Book> getAllBooks(){

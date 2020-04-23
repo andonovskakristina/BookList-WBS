@@ -38,18 +38,7 @@ function Header(){
                                 <a className="nav-link">Books</a>
                             </Link>
                         </li>
-                        <li className="nav-item">
-                            <Link className={"nav-link"}
-                                  to="/books/read">
-                                <a className="nav-link">Read Books</a>
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className={"nav-link"}
-                                  to="/books/favourite">
-                                <a className="nav-link">Favourite Books</a>
-                            </Link>
-                        </li>
+
                     </ul>
                 </div>
             </nav>

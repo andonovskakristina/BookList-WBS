@@ -3,6 +3,7 @@ import MyScatterPlot from "./MyScatterPlot";
 import axios from "axios";
 import MyBarChart from "./MyBarChart";
 import HomeImage from "../images/home.png"
+import Book from "./Book";
 
 class Home extends Component {
     constructor(props) {
@@ -27,8 +28,6 @@ class Home extends Component {
                 console.log(response);
                 console.log("response");
                 this.setState({ books: response.data,
-                   /// bookNumberPages: response.data.map(book => book.numberPages),
-                 //   bookReviews: response.data.map(book => book.review)
                 });
                 console.log(this.state.books);
             })
@@ -45,16 +44,17 @@ class Home extends Component {
             .catch(error => console.log(error.response))
     };
 
-    render() {
+    render()
+    {
+        const newList = this.state.books.map(x => <div> {this.state.books.title}</div> );
+
         return (
             <div style={{textAlign: "left !important", fontSize: "1rem !important"}} className={"bg-light"}>
                 <img src={HomeImage}
                      style={{width: "100%"}}
                      className={"mb-5"}
                 />
-
-
-                <div className={"bg-light"}>{this.state.books.ISBN}
+                <div className={"bg-danger p-5"}>
                 </div>
             </div>
         )

@@ -3,6 +3,7 @@ package mk.ukim.finki.wp.booklist.repositories.impl;
 import mk.ukim.finki.wp.booklist.models.Book;
 import mk.ukim.finki.wp.booklist.repositories.BookRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.UUID;
@@ -28,31 +29,31 @@ public class BookRepositoryImpl implements BookRepository {
 
     public void openConnection(String qe, String query) {
         if(qe.equals("qeAll"))
-            qeAll = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeAll = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                 query);
         else if(qe.equals("qeBookNames"))
-            qeBookNames = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeBookNames = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
         else if(qe.equals("qeAuthor"))
-            qeAuthor = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeAuthor = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
         else if(qe.equals("qeISBN"))
-            qeISBN = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeISBN = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
         else if(qe.equals("qeGenres"))
-            qeGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
         else if(qe.equals("qeNumberPages"))
-            qeNumberPages = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeNumberPages = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
         else if(qe.equals("qePublicationDate"))
-            qePublicationDate = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qePublicationDate = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
         else if(qe.equals("qeDescription"))
-            qeDescription = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeDescription = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
         else if(qe.equals("qeImageUrl"))
-            qeImageUrl = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+            qeImageUrl = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
     }
 
@@ -161,7 +162,7 @@ public class BookRepositoryImpl implements BookRepository {
             return (qs.get("o")).toString();
         }
         catch (Exception e) {
-            return "";
+            return "0";
         }
     }
 
@@ -178,7 +179,7 @@ public class BookRepositoryImpl implements BookRepository {
             return (qs.get("o")).toString();
         }
         catch (Exception e) {
-            return "";
+            return "/";
         }
     }
 
@@ -218,11 +219,58 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public boolean existsById(String id) {
-        return false;
+        openConnection("qeISBN", "select ?o\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?o=\""+id+"\"&&?p=<http://dbpedia.org/ontology/isbn>)\n" +
+                "}");
+        ResultSet results = qeISBN.execSelect();
+        try
+        {
+            QuerySolution qs = results.next();
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+
     }
 
     @Override
-    public Book findById(String id) {
-        return null;
+    public String findById(String id) {
+        openConnection("qeISBN", "select ?s\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?o=\""+id+"\"&&?p=<http://dbpedia.org/ontology/isbn>)\n" +
+                "}");
+        ResultSet results = qeISBN.execSelect();
+        try
+        {  QuerySolution qs = results.next();
+            return qs.get("s").toString();
+        }
+        catch (Exception e) {
+            return "";
+        }
     }
+
+    @Override
+    public List<String> findAllDistinctAuthors() {
+        List<String> authors = new ArrayList<>();
+        openConnection("qeAuthor", "select distinct ?o\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/author>)\n" +
+                "}");
+        ResultSet results = qeISBN.execSelect();
+        try {
+            QuerySolution qs = results.next();
+            authors.add(qs.get("s").toString());
+        }
+        catch (Exception e) {
+        System.out.println("error");
+        }
+
+        return authors;
+    }
+
+
+
+
 }

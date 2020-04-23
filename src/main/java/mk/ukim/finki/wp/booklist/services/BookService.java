@@ -17,7 +17,9 @@ public interface BookService {
 
     List<Book> getAllBooks();
 
-    //Book get(String id);
+    Book get(String id);
+
+    List<String> findAllDistinctAuthors();
 
     //Book getByBookTitle(String title);
 

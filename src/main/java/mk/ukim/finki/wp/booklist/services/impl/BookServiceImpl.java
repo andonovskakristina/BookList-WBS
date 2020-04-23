@@ -43,15 +43,41 @@ public class BookServiceImpl implements BookService {
     }
 */
 
+    Book getBook(String name) {
+        String isbn = bookRepository.findISBN(name);
+        bookRepository.closeConnection("qeISBN");
+
+        String author = bookRepository.findAuthor(name);
+        bookRepository.closeConnection("qeAuthor");
+
+        String genres = bookRepository.findGenres(name);
+        bookRepository.closeConnection("qeGenres");
+
+        String numberPages = bookRepository.findNumberPages(name);
+        bookRepository.closeConnection("qeNumberPages");
+
+        String publicationDate = bookRepository.findPublicationDate(name);
+        bookRepository.closeConnection("qePublicationDate");
+
+        String description = bookRepository.findDescription(name);
+        bookRepository.closeConnection("qeDescription");
+
+        String imageUrl = bookRepository.findImageUrl(name);
+        bookRepository.closeConnection("qeImageUrl");
+
+        return new Book(isbn, formatString(name), formatString(author),
+                formatString(genres), formatNumberPages(numberPages), publicationDate, description, imageUrl);
+    }
+
     String formatString(String string){
          String[] arr = string.split("/");
-         string = arr[arr.length-1].replace("/"," ");
+         string = arr[arr.length-1].replace("_"," ");
          string.trim();
          return string;
     }
 
     int formatNumberPages(String numberPages) {
-        return Integer.parseInt(numberPages.split("\"")[0]);
+        return Integer.parseInt(numberPages.split("\\^")[0]);
     }
 
     String formatDate(String date) {
@@ -60,8 +86,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getAllBooks() {
-        ResultSet rsBookNames = bookRepository.findAllBookNames();
 
+        ResultSet rsBookNames = bookRepository.findAllBookNames();
         List<Book> books = new ArrayList<>();
 
         while ( rsBookNames.hasNext() ) {
@@ -69,47 +95,33 @@ public class BookServiceImpl implements BookService {
             if((qs.get("s")) != null) {
                 String name = (qs.get("s")).toString();
 
-                String isbn = bookRepository.findISBN(name);
-                bookRepository.closeConnection("qeISBN");
-
-                String author = bookRepository.findAuthor(name);
-                bookRepository.closeConnection("qeAuthor");
-
-                String genres = bookRepository.findGenres(name);
-                bookRepository.closeConnection("qeGenres");
-
-                String numberPages = bookRepository.findNumberPages(name);
-                bookRepository.closeConnection("qeNumberPages");
-
-                String publicationDate = bookRepository.findPublicationDate(name);
-                bookRepository.closeConnection("qePublicationDate");
-
-                String description = bookRepository.findDescription(name);
-                bookRepository.closeConnection("qeDescription");
-
-                String imageUrl = bookRepository.findImageUrl(name);
-                bookRepository.closeConnection("qeImageUrl");
-
-                Book b = new Book(formatString(isbn), formatString(name), formatString(author),
-                        formatString(genres), numberPages, publicationDate, description, imageUrl);
+                Book b = getBook(name);
                 books.add(b);
               }
               else break;
         }
-
         bookRepository.closeConnection("qeBookNames");
 
         return books;
     }
-/*
+
     @Override
     public Book get(String id) {
-        if(!bookRepository.existsById(id))
+        if(!bookRepository.existsById(id)) {
+            bookRepository.closeConnection("qeISBN");
             throw new ApiException("Book doesn't exist");
-        Book book = bookRepository.findById(id);
+        }
+        Book book = getBook(bookRepository.findById(id));
+        bookRepository.closeConnection("qeISBN");
         return book;
     }
 
+    @Override
+    public List<String> findAllDistinctAuthors() {
+        List<String> authors = bookRepository.findAllDistinctAuthors();
+        return authors;
+    }
+/*
     @Override
     public Book getByBookTitle(String title) {
       return null;
