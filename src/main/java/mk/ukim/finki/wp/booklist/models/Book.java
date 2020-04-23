@@ -28,7 +28,7 @@ public class Book {
 
     private String genres;
 
-    private int numberPages;
+    private String numberPages;
 
     private String publicationDate;
 
@@ -39,10 +39,10 @@ public class Book {
 
     //private boolean favourite;
 
-    //private String imageUrl;
+    private String imageUrl;
 
-    public Book(String isbn, String title, String author, String genres, int numberPages,
-                String publicationDate, String description) {
+    public Book(String isbn, String title, String author, String genres, String numberPages,
+                String publicationDate, String description, String imageUrl) {
         this.ISBN =  isbn;
         this.title = title;
         this.author = author;
@@ -50,5 +50,6 @@ public class Book {
         this.numberPages = numberPages;
         this.publicationDate = publicationDate;
         this.description = description;
+        this.imageUrl = imageUrl;
     }
 }

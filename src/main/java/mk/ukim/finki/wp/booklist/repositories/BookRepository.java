@@ -27,6 +27,8 @@ public interface BookRepository {
 
     String findDescription(String bookName);
 
+    String findImageUrl(String bookName);
+
     boolean existsById(String id);
 
     Book findById(String id);

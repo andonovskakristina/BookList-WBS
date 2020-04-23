@@ -17,9 +17,9 @@ public interface BookService {
 
     List<Book> getAllBooks();
 
-    Book get(String id);
+    //Book get(String id);
 
-    Book getByBookTitle(String title);
+    //Book getByBookTitle(String title);
 
    // List<Book> getBooksWithPagesLessThan(int numberPages);
 

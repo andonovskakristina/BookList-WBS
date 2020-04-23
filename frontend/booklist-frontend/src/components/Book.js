@@ -8,16 +8,16 @@ class Book extends Component{
         this.state = {
             ISBN: props.ISBN,
             title: props.title,
-           // publicationDate: props.publicationDate,
+            publicationDate: props.publicationDate,
             authorName: props.authorName,
-           /* review: props.review,
+            review: props.review,
             numberPages: props.numberPages,
             read: props.read,
             favourite: props.favourite,
             genres: props.genres,
             imageUrl: props.imageUrl,
             isReadPage: props.isReadPage,
-            isFavePage: props.isFavePage*/
+            isFavePage: props.isFavePage
         }
     }
 

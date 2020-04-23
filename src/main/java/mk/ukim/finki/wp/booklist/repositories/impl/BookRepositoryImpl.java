@@ -24,31 +24,35 @@ public class BookRepositoryImpl implements BookRepository {
     QueryExecution qePublicationDate;
     QueryExecution qeNumberPages;
     QueryExecution qeDescription;
+    QueryExecution qeImageUrl;
 
     public void openConnection(String qe, String query) {
         if(qe.equals("qeAll"))
-            qeAll = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qeAll = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                 query);
         else if(qe.equals("qeBookNames"))
-            qeBookNames = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qeBookNames = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                     query);
         else if(qe.equals("qeAuthor"))
-            qeAuthor = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qeAuthor = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                     query);
         else if(qe.equals("qeISBN"))
-            qeISBN = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qeISBN = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                     query);
         else if(qe.equals("qeGenres"))
-            qeGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qeGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                     query);
         else if(qe.equals("qeNumberPages"))
-            qeNumberPages = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qeNumberPages = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                     query);
         else if(qe.equals("qePublicationDate"))
-            qePublicationDate = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qePublicationDate = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                     query);
         else if(qe.equals("qeDescription"))
-            qeDescription = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+            qeDescription = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
+                    query);
+        else if(qe.equals("qeImageUrl"))
+            qeImageUrl = QueryExecutionFactory.sparqlService("http://localhost:3030/proba/query",
                     query);
     }
 
@@ -70,6 +74,8 @@ public class BookRepositoryImpl implements BookRepository {
             qePublicationDate.close();
         else if(qe.equals("qeDescription"))
             qeDescription.close();
+        else if(qe.equals("qeImageUrl"))
+            qeImageUrl.close();
     }
 
     @Override
@@ -84,7 +90,7 @@ public class BookRepositoryImpl implements BookRepository {
         openConnection("qeBookNames", "select ?s\n" +
                 "where {\n" +
                 "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/isbn>)\n" +
-                "} limit 30");
+                "} limit 20");
         ResultSet results = qeBookNames.execSelect();
 
         return results;
@@ -190,6 +196,23 @@ public class BookRepositoryImpl implements BookRepository {
         }
         catch (Exception e) {
             return "No book description.";
+        }
+    }
+
+    @Override
+    public String findImageUrl(String bookName) {
+        openConnection("qeImageUrl", "select ?o\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?s=<"+bookName+">&&?p=<http://dbpedia.org/ontology/thumbnail>)\n" +
+                "}");
+        ResultSet results = qeImageUrl.execSelect();
+        try
+        {  QuerySolution qs = results.next();
+
+            return (qs.get("o")).toString();
+        }
+        catch (Exception e) {
+            return "https://store.lexisnexis.com/__data/assets/image/0003/26571/dummy_cover.jpg";
         }
     }
 

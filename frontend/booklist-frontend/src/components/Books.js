@@ -27,6 +27,16 @@ class Books extends Component {
         }
     }
 
+    fetchAllBooks = () => {
+        axios.get(`http://localhost:8080/api/books/allBooks`)
+            .then(response => {
+                console.log(response);
+                this.setState({ List: response.data
+                });
+            })
+            .catch(error => console.log(error.response))
+    };
+
     fetchBooks = (page = this.state.page,
                   size = this.state.pageSize,
                   authors = this.state.authorIds,
@@ -50,7 +60,8 @@ class Books extends Component {
     };
 
     componentDidMount() {
-        this.fetchBooks(0);
+        //this.fetchBooks(0);
+        this.fetchAllBooks();
     }
 
     onDeleteElement = (bookISBN) => {
@@ -101,7 +112,7 @@ class Books extends Component {
     handlePageClick = (pageChangedEvent) => {
         this.fetchBooks(pageChangedEvent.selected);
     };
-
+/*
     renderPaginate = () =>
         <ReactPaginate previousLabel={'← Previous'}
                        nextLabel={'Next →'}
@@ -123,18 +134,18 @@ class Books extends Component {
                        activeLinkClassName={'active bg-secondary border-secondary'}
                        disabledClassName={"disabled"}
         />;
-
+*/
     render() {
         const newList = this.state.List.map(book =>
             <Book ISBN={book.isbn}
                   title={book.title}
                   publicationDate={book.publicationDate}
-                  authorName={book.authorName}
+                  authorName={book.author}
                   review={book.review}
                   numberPages={book.numberPages}
                   read={book.read}
                   favourite={book.favourite}
-                  genres={book.bookGenres}
+                  genres={book.genres}
                   imageUrl={book.imageUrl}
                   key={book.isbn}
                   onDelete={this.onDeleteElement}
@@ -207,7 +218,7 @@ class Books extends Component {
                             <div style={{width: "100%"}}>
                                 {newList}
                                 <div className={"mt-4"}>
-                                {this.renderPaginate()}
+
                                 </div>
                             </div>
                         </div>

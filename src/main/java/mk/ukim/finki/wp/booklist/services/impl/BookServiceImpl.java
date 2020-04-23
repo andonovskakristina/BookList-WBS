@@ -61,44 +61,47 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getAllBooks() {
         ResultSet rsBookNames = bookRepository.findAllBookNames();
-        //ResultSet rsAll = bookRepository.findAll();
-        //ResultSet temp = rsAll;
 
         List<Book> books = new ArrayList<>();
 
         while ( rsBookNames.hasNext() ) {
-              final QuerySolution qs = rsBookNames.next();
-              if((qs.get("s")) != null) {
+            final QuerySolution qs = rsBookNames.next();
+            if((qs.get("s")) != null) {
+                String name = (qs.get("s")).toString();
 
-                    String name = (qs.get("s")).toString();
-                    String isbn = bookRepository.findISBN(name);
-                    String author = bookRepository.findAuthor(name);
-                    String genres = bookRepository.findGenres(name);
-                    String numberPages = bookRepository.findNumberPages(name);
-                    String publicationDate = bookRepository.findPublicationDate(name);
-                    String description = bookRepository.findDescription(name);
+                String isbn = bookRepository.findISBN(name);
+                bookRepository.closeConnection("qeISBN");
 
-                    Book b = new Book(formatString(isbn), formatString(name), formatString(author),
-                    formatString(genres), formatNumberPages(numberPages), formatDate(publicationDate),
-                    description);
-                    books.add(b);
+                String author = bookRepository.findAuthor(name);
+                bookRepository.closeConnection("qeAuthor");
 
-                    bookRepository.closeConnection("qeISBN");
-                    bookRepository.closeConnection("qeAuthor");
-                    bookRepository.closeConnection("qeGenres");
-                    bookRepository.closeConnection("qeNumberPages");
-                    bookRepository.closeConnection("qePublicationDate");
-                    bookRepository.closeConnection("qeDescription");
+                String genres = bookRepository.findGenres(name);
+                bookRepository.closeConnection("qeGenres");
+
+                String numberPages = bookRepository.findNumberPages(name);
+                bookRepository.closeConnection("qeNumberPages");
+
+                String publicationDate = bookRepository.findPublicationDate(name);
+                bookRepository.closeConnection("qePublicationDate");
+
+                String description = bookRepository.findDescription(name);
+                bookRepository.closeConnection("qeDescription");
+
+                String imageUrl = bookRepository.findImageUrl(name);
+                bookRepository.closeConnection("qeImageUrl");
+
+                Book b = new Book(formatString(isbn), formatString(name), formatString(author),
+                        formatString(genres), numberPages, publicationDate, description, imageUrl);
+                books.add(b);
               }
               else break;
         }
 
         bookRepository.closeConnection("qeBookNames");
-        //bookRepository.closeConnection("qeAll");
 
         return books;
     }
-
+/*
     @Override
     public Book get(String id) {
         if(!bookRepository.existsById(id))
@@ -110,7 +113,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book getByBookTitle(String title) {
       return null;
-    }
+    }*/
 
   /*   @Override
     public Book getByBookTitle(String title) {
