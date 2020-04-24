@@ -15,6 +15,8 @@ public interface BookRepository {
 
     ResultSet findAllBookNames();
 
+    ResultSet findAllBookNamesFilter(String search, String[] authors, String[] genres);
+
     String findISBN(String bookName);
 
     String findAuthor(String bookName);

@@ -1,17 +1,13 @@
 package mk.ukim.finki.wp.booklist.repositories.impl;
 
-import mk.ukim.finki.wp.booklist.models.Book;
 import mk.ukim.finki.wp.booklist.repositories.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.UUID;
-
 import org.apache.jena.query.*;
 import org.springframework.stereotype.Repository;
 
-import static org.apache.jena.query.ResultSetFactory.copyResults;
 import static org.apache.jena.query.ResultSetFactory.makeRewindable;
 
 @Repository
@@ -105,6 +101,61 @@ public class BookRepositoryImpl implements BookRepository {
                 "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/isbn>)\n" +
                 "} limit 20");
         ResultSet results = qeBookNames.execSelect();
+
+        return results;
+    }
+
+    String formatStringFilter(String string){
+        return string.replace(" ", "_");
+    }
+
+    private StringBuilder getFilterQuery(String search, String[] authors, String[] genres) {
+        StringBuilder filterQuery = new StringBuilder();
+
+        if(search != null && search != "") {
+            // filter the book title by search string
+            filterQuery.append("regex(str(?s), \".*")
+                    .append(formatStringFilter(search))
+                    .append(".*\",'i')");
+            if((authors != null && authors.length > 0) || (genres != null && genres.length > 0))
+                filterQuery.append(" && ");
+        }
+        if((authors != null && authors.length > 0) || (genres != null && genres.length > 0))
+            filterQuery.append(" (");
+        if (authors != null && authors.length > 0) {
+            for(int i = 0; i < authors.length; i++) {
+                filterQuery.append("regex(str(?o), \".*")
+                        .append(formatStringFilter(authors[i]))
+                        .append("\",'i')");
+                if(i != authors.length - 1 || (genres != null && genres.length > 0))
+                    filterQuery.append(" || ");
+            }
+        }
+        if (genres != null && genres.length > 0) {
+            for(int i = 0; i < genres.length; i++) {
+                filterQuery.append("regex(str(?o), \".*")
+                        .append(formatStringFilter(genres[i]))
+                        .append("\",'i')");
+                if(i != genres.length - 1)
+                    filterQuery.append(" || ");
+            }
+        }
+        if((authors != null && authors.length > 0) || (genres != null && genres.length > 0)) {
+            filterQuery.append(") && (regex(str(?p), \".*author\",'i') || regex(str(?p), \".*literaryGenre\",'i'))");
+        }
+
+        return filterQuery;
+    }
+
+    @Override
+    public ResultSet findAllBookNamesFilter(String search, String[] authors, String[] genres) {
+        StringBuilder query = getFilterQuery(search, authors, genres);
+        openConnection("qeAll", "select ?s\n" +
+                "where {\n" +
+                "  ?s ?p ?o." +
+                " filter ("+ query +")\n" +
+                "}");
+        ResultSet results = qeAll.execSelect();
 
         return results;
     }

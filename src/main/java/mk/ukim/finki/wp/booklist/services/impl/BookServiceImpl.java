@@ -162,8 +162,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> getAllBooksByPageAndFilters(int[] AuthorIds, String[] genres, String search, Pageable pageable){
-        ResultSet rsBookNames = bookRepository.findAllBookNames();
+    public Page<Book> getAllBooksByPageAndFilters(String search, String[] authors,
+                                                  String[] genres, Pageable pageable){
+        ResultSet rsBookNames;
+        String closeConn;
+        if((search == null || search == "") && (authors == null ||authors.length == 0) &&
+                (genres == null || genres.length == 0)) {
+            rsBookNames = bookRepository.findAllBookNames();
+            closeConn = "qeBookNames";
+        }
+        else {
+            rsBookNames = bookRepository.findAllBookNamesFilter(search, authors, genres);
+            closeConn = "qeAll";
+        }
+
         List<Book> books = new ArrayList<>();
 
         while ( rsBookNames.hasNext() ) {
@@ -176,7 +188,7 @@ public class BookServiceImpl implements BookService {
             }
             else break;
         }
-        bookRepository.closeConnection("qeBookNames");
+        bookRepository.closeConnection(closeConn);
 
         int start = (int) pageable.getOffset();
         int end = (start + pageable.getPageSize()) > books.size() ? books.size() : (start + pageable.getPageSize());

@@ -23,7 +23,7 @@ public interface BookService {
 
     Book get(String id);
 
-    Page<Book> getAllBooksByPageAndFilters(int[] AuthorIds, String[] genres, String search, Pageable pageable);
+    Page<Book> getAllBooksByPageAndFilters(String search, String[] authors, String[] genres, Pageable pageable);
 
     List<String> findAllDistinctAuthors();
 
