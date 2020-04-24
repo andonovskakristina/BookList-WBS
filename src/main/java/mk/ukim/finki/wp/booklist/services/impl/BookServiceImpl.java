@@ -8,6 +8,9 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -70,9 +73,11 @@ public class BookServiceImpl implements BookService {
     }
 
     String formatString(String string){
-         String[] arr = string.split("/");
-         string = arr[arr.length-1].replace("_"," ");
-         string.trim();
+        if(string != "/") {
+            String[] arr = string.split("/");
+            string = arr[arr.length - 1].replace("_", " ");
+            string.trim();
+        }
          return string;
     }
 
@@ -117,10 +122,69 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<String> getAllAuthors() {
+        ResultSet rsBookAuthors = bookRepository.findAllBookAuthors();
+        List<String> authors = new ArrayList<>();
+
+        while ( rsBookAuthors.hasNext() ) {
+            final QuerySolution qs = rsBookAuthors.next();
+            if((qs.get("o")) != null) {
+                authors.add(formatString((qs.get("o")).toString()));
+            }
+            else break;
+        }
+        bookRepository.closeConnection("qeBookAuthors");
+
+        return authors;
+    }
+
+    @Override
+    public List<String> getAllGenres() {
+        ResultSet rsBookGenres = bookRepository.findAllBookGenres();
+        List<String> genres = new ArrayList<>();
+
+        while ( rsBookGenres.hasNext() ) {
+            final QuerySolution qs = rsBookGenres.next();
+            if((qs.get("o")) != null) {
+                genres.add(formatString((qs.get("o")).toString()));
+            }
+            else break;
+        }
+        bookRepository.closeConnection("qeBookGenres");
+
+        return genres;
+    }
+
+    @Override
     public List<String> findAllDistinctAuthors() {
         List<String> authors = bookRepository.findAllDistinctAuthors();
         return authors;
     }
+
+    @Override
+    public Page<Book> getAllBooksByPageAndFilters(int[] AuthorIds, String[] genres, String search, Pageable pageable){
+        ResultSet rsBookNames = bookRepository.findAllBookNames();
+        List<Book> books = new ArrayList<>();
+
+        while ( rsBookNames.hasNext() ) {
+            final QuerySolution qs = rsBookNames.next();
+            if((qs.get("s")) != null) {
+                String name = (qs.get("s")).toString();
+
+                Book b = getBook(name);
+                books.add(b);
+            }
+            else break;
+        }
+        bookRepository.closeConnection("qeBookNames");
+
+        int start = (int) pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > books.size() ? books.size() : (start + pageable.getPageSize());
+        Page<Book> pages = new PageImpl<Book>(books.subList(start, end), pageable, books.size());
+
+        return pages;
+    }
+
 /*
     @Override
     public Book getByBookTitle(String title) {

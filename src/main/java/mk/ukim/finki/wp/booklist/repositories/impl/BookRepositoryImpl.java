@@ -26,6 +26,8 @@ public class BookRepositoryImpl implements BookRepository {
     QueryExecution qeNumberPages;
     QueryExecution qeDescription;
     QueryExecution qeImageUrl;
+    QueryExecution qeBookAuthors;
+    QueryExecution qeBookGenres;
 
     public void openConnection(String qe, String query) {
         if(qe.equals("qeAll"))
@@ -55,6 +57,12 @@ public class BookRepositoryImpl implements BookRepository {
         else if(qe.equals("qeImageUrl"))
             qeImageUrl = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
+        else if(qe.equals("qeBookAuthors"))
+            qeBookAuthors = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+                    query);
+        else if(qe.equals("qeBookGenres"))
+            qeBookGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+                    query);
     }
 
     @Override
@@ -77,6 +85,10 @@ public class BookRepositoryImpl implements BookRepository {
             qeDescription.close();
         else if(qe.equals("qeImageUrl"))
             qeImageUrl.close();
+        else if(qe.equals("qeBookAuthors"))
+            qeBookAuthors.close();
+        else if(qe.equals("qeBookGenres"))
+            qeBookGenres.close();
     }
 
     @Override
@@ -127,7 +139,7 @@ public class BookRepositoryImpl implements BookRepository {
             return (qs.get("o")).toString();
         }
         catch (Exception e) {
-            return "";
+            return "/";
         }
     }
 
@@ -145,7 +157,7 @@ public class BookRepositoryImpl implements BookRepository {
         return (qs.get("o")).toString();
         }
         catch (Exception e) {
-            return "";
+            return "/";
         }
     }
 
@@ -270,7 +282,27 @@ public class BookRepositoryImpl implements BookRepository {
         return authors;
     }
 
+    @Override
+    public ResultSet findAllBookAuthors() {
+        openConnection("qeBookAuthors", "select ?o\n" +
+                "where {\n" +
+                "\t?s ?p ?o filter (?p=<http://dbpedia.org/ontology/author>&&?o!=\"\")\n" +
+                "}\n" +
+                "group by ?o");
+        ResultSet results = qeBookAuthors.execSelect();
 
+        return results;
+    }
 
+    @Override
+    public ResultSet findAllBookGenres() {
+        openConnection("qeBookGenres", "select ?o\n" +
+                "where {\n" +
+                "\t?s ?p ?o filter (?p=<http://dbpedia.org/ontology/literaryGenre>)\n" +
+                "}\n" +
+                "group by ?o");
+        ResultSet results = qeBookGenres.execSelect();
 
+        return results;
+    }
 }

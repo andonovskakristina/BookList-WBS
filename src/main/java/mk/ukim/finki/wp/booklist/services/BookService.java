@@ -17,7 +17,13 @@ public interface BookService {
 
     List<Book> getAllBooks();
 
+    List<String> getAllAuthors();
+
+    List<String> getAllGenres();
+
     Book get(String id);
+
+    Page<Book> getAllBooksByPageAndFilters(int[] AuthorIds, String[] genres, String search, Pageable pageable);
 
     List<String> findAllDistinctAuthors();
 

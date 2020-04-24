@@ -34,4 +34,8 @@ public interface BookRepository {
     boolean existsById(String id);
 
     String findById(String id);
+
+    ResultSet findAllBookAuthors();
+
+    ResultSet findAllBookGenres();
 }

@@ -84,6 +84,29 @@ public class BookApiController {
     public List<Book> getAllBooks(){
         return bookService.getAllBooks();
     }
+
+    @GetMapping("/allAuthors")
+    public List<String> getAllAuthors(){
+        return bookService.getAllAuthors();
+    }
+
+    @GetMapping("/allGenres")
+    public List<String> getAllGenres(){
+        return bookService.getAllGenres();
+    }
+
+    @GetMapping()
+    public Page<Book> getAllBooksPageable(@RequestParam(value = "authorIds",
+            required = false) int[] authorIds,
+                                  @RequestParam(value = "genres",
+                                          required = false) String[] genres,
+                                  @RequestParam(value = "search",
+                                          required = false) String search,
+                                  @PageableDefault(page = 0, size = 5, sort = {"title"}) Pageable pageable){
+        return bookService.getAllBooksByPageAndFilters(authorIds, genres, search, pageable);
+
+    }
+
 /*
     @GetMapping()
     public Page<Book> getAllBooks(@RequestParam(value = "authorIds",
