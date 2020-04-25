@@ -40,11 +40,11 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(book);
     }
 
-    @Override
+*/    @Override
     public void delete(String id) {
         bookRepository.deleteById(id);
     }
-*/
+
 
     Book getBook(String name) {
         String isbn = bookRepository.findISBN(name);
@@ -166,7 +166,7 @@ public class BookServiceImpl implements BookService {
                                                   String[] genres, Pageable pageable){
         ResultSet rsBookNames;
         String closeConn;
-        if((search == null || search == "") && (authors == null ||authors.length == 0) &&
+        if((search == null || search.equals("")) && (authors == null ||authors.length == 0) &&
                 (genres == null || genres.length == 0)) {
             rsBookNames = bookRepository.findAllBookNames();
             closeConn = "qeBookNames";
@@ -192,9 +192,9 @@ public class BookServiceImpl implements BookService {
 
         int start = (int) pageable.getOffset();
         int end = (start + pageable.getPageSize()) > books.size() ? books.size() : (start + pageable.getPageSize());
-        Page<Book> pages = new PageImpl<Book>(books.subList(start, end), pageable, books.size());
 
-        return pages;
+        return  new PageImpl<Book>(books.subList(start, end), pageable, books.size());
+
     }
 
 /*

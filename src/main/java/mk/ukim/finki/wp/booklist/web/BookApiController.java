@@ -69,11 +69,11 @@ public class BookApiController {
         Book result = bookService.edit(id, new Book(id, title, LocalDate.parse(publicationDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), authorService.get(authorId), review, numberPages, description, old.getComment(), old.isRead(), old.isFavourite(), imageUrl, genres));
         return result;
     }
-
+*/
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable String id){
         bookService.delete(id);
-    }*/
+    }
 
     @GetMapping("/{id}")
     public Book getBook(@PathVariable String id){

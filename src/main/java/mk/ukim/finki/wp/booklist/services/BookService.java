@@ -11,9 +11,9 @@ import java.util.List;
 public interface BookService {
     /*Book create(Book book);
 
-    Book edit(String id, Book book);
+    Book edit(String id, Book book);*/
 
-    void delete(String id);*/
+    void delete(String id);
 
     List<Book> getAllBooks();
 

@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
-import MyScatterPlot from "./MyScatterPlot";
 import axios from "axios";
-import MyBarChart from "./MyBarChart";
 import HomeImage from "../images/home.png"
-import Book from "./Book";
+import BookCarousel from "./BookCarousel";
 
 class Home extends Component {
     constructor(props) {
@@ -54,7 +52,9 @@ class Home extends Component {
                      style={{width: "100%"}}
                      className={"mb-5"}
                 />
-                <div className={"bg-danger p-5"}>
+
+                <div className={"m-auto w-75 pb-5"}>
+                    <BookCarousel/>
                 </div>
             </div>
         )

@@ -57,11 +57,11 @@ class BookCarousel extends Component {
             newList = this.state.randomBooks.map(book =>
                 <Carousel.Item key={book.isbn}>
                     <img
-                        className="d-block w-100"
+                        className="d-block"
                         src={book.imageUrl}
                         alt={book.title}
-                        style={{width: "180px", height: "250px",
-                            maxHeight: "250px", maxWidth: "180px", cursor: "pointer"}}
+                        style={{width: "1000px", height: "500px",
+                        cursor: "pointer"}}
                         onClick={() =>{
                             window.location = `/books/${book.isbn}/details`;
                         }}

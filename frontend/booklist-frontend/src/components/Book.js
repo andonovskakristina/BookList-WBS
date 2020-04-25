@@ -27,7 +27,7 @@ class Book extends Component{
                 <div className={"row my-3 text-left pl-0"}
                      style={{backgroundColor: "lightgray"}}>
                     <div className={"col-md-3 pl-0"}>
-                        <img src={this.state.imageUrl}
+                        <img src={this.state.imageUrl} alt={"image"}
                              style={{maxWidth: "250px", maxHeight: "200px", width: "100%"}}/>
                     </div>
                     <div className={"col-md-7 mt-3 pl-0"}>
@@ -49,10 +49,13 @@ class Book extends Component{
                                 <span className="fa fa-book mr-2"/>
                                 <span>{this.state.numberPages} pages</span>
                             </div>
+                            <div className={"mt-2"}>
                             <Link to={`/books/${this.state.ISBN}/details`}
                                   className="text-dark">
                                 <span><strong>Read more</strong></span>
-                            </Link><br/>
+                            </Link>
+                            </div>
+                            <br/>
                         </div>
                     </div>
                     <div className={"col-md mt-3"}>

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.query.*;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateRequest;
 import org.springframework.stereotype.Repository;
 
 import static org.apache.jena.query.ResultSetFactory.makeRewindable;
@@ -13,17 +17,17 @@ import static org.apache.jena.query.ResultSetFactory.makeRewindable;
 @Repository
 public class BookRepositoryImpl implements BookRepository {
 
-    QueryExecution qeAll;
-    QueryExecution qeBookNames;
-    QueryExecution qeAuthor;
-    QueryExecution qeISBN;
-    QueryExecution qeGenres;
-    QueryExecution qePublicationDate;
-    QueryExecution qeNumberPages;
-    QueryExecution qeDescription;
-    QueryExecution qeImageUrl;
-    QueryExecution qeBookAuthors;
-    QueryExecution qeBookGenres;
+    private QueryExecution qeAll;
+    private QueryExecution qeBookNames;
+    private QueryExecution qeAuthor;
+    private QueryExecution qeISBN;
+    private QueryExecution qeGenres;
+    private QueryExecution qePublicationDate;
+    private QueryExecution qeNumberPages;
+    private QueryExecution qeDescription;
+    private QueryExecution qeImageUrl;
+    private QueryExecution qeBookAuthors;
+    private QueryExecution qeBookGenres;
 
     public void openConnection(String qe, String query) {
         if(qe.equals("qeAll"))
@@ -340,9 +344,8 @@ public class BookRepositoryImpl implements BookRepository {
                 "\t?s ?p ?o filter (?p=<http://dbpedia.org/ontology/author>&&?o!=\"\")\n" +
                 "}\n" +
                 "group by ?o");
-        ResultSet results = qeBookAuthors.execSelect();
 
-        return results;
+        return qeBookAuthors.execSelect();
     }
 
     @Override
@@ -356,4 +359,46 @@ public class BookRepositoryImpl implements BookRepository {
 
         return results;
     }
+
+
+    public String findTitleByIsbn(String isbn){
+
+        openConnection("qeISBN", "select ?s ?p ?o \n" +
+                "where {?s ?p ?o filter (?o=\""+isbn+"\" )  }");
+
+        String kveri = "select ?s ?p ?o \n" +
+        "where {?s ?p ?o filter (?o=\""+isbn+"\" )  }";
+
+//System.out.println(kveri);
+
+        String x = "";
+        ResultSet name = qeISBN.execSelect();
+        try
+        {  QuerySolution qs = name.next();
+            return qs.toString();
+        }
+        catch (Exception e) {
+            return "";
+        }
+       finally {
+            closeConnection("qeISBN");
+        }
+    }
+
+
+
+   @Override
+    public void deleteById(String id){
+
+        String tuple = findTitleByIsbn(id).split("s = ")[1];
+       String queryString = "delete {?s ?p ?o}" +
+                " where {?s ?p ?o filter(?s="+tuple+"}";
+
+       System.out.println(queryString);
+
+       UpdateRequest request = UpdateFactory.create(queryString) ;
+       UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, "http://localhost:3030/Books/update") ;
+
+   }
+
 }

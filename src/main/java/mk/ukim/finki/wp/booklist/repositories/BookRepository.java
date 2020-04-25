@@ -40,4 +40,6 @@ public interface BookRepository {
     ResultSet findAllBookAuthors();
 
     ResultSet findAllBookGenres();
+
+    void deleteById(String id);
 }
