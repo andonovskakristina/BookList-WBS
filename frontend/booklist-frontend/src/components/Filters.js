@@ -10,51 +10,31 @@ class Books extends Component {
         this.state = {
             genreOptions: [],
             authorOptions: [],
-            authorOptionsIndexes: [],
-            minPages: 0,
-            maxPages: 0,
             selectedGenres: [],
-            selectedAuthorsIndexes: [],
-            selectedMinPages: 0,
-            selectedMaxPages: 0,
-            search: "",
-            reset: false
+            selectedAuthors: [],
+            search: ""
         }
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8080/api/genres")
+        axios.get("http://localhost:8080/api/books/allGenres")
             .then(response => {
-                this.setState({genreOptions: response.data.map(genre => genre.name)});
+                this.setState({genreOptions: response.data});
                 console.log(response);
             })
             .catch(error => {
                 console.log(error)
             });
 
-        axios.get("http://localhost:8080/api/authors/allAuthors")
+        axios.get("http://localhost:8080/api/books/allAuthors")
             .then(response => {
-                this.setState({authorOptions: response.data.map(author => author.name)});
-                this.setState({authorOptionsIndexes: response.data.map(author => author.id)});
+                this.setState({authorOptions: response.data});
                 console.log(response);
             })
             .catch(error => {
                 console.log(error);
             });
-
-        axios.get("http://localhost:8080/api/books/minMaxNumberPages")
-            .then(response => {
-                this.setState({minPages: response.data[0], maxPages: response.data[1]});
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error)
-            });
     }
-
-    filterByPage = (minPages, maxPages) => {
-        this.setState({selectedMinPages: minPages, selectedMaxPages: maxPages});
-    };
 
     onGenreChange = (values) => {
         {console.log(values.map(response => response.label))}
@@ -62,8 +42,8 @@ class Books extends Component {
     };
 
     onAuthorChange = (values) => {
-        var indexes = values.map(val => val.value);
-        this.setState({selectedAuthorsIndexes: indexes});
+        var authors = values.map(val => val.value);
+        this.setState({selectedAuthors: authors});
     };
 
     onSearchChange = (e) => {
@@ -93,13 +73,6 @@ class Books extends Component {
                     </form>
                 </div>
                 <hr/>
-                <div className={"row justify-content-center"}>
-                <RangeSlider minPages={this.state.minPages}
-                             maxPages={this.state.maxPages}
-                             filterByPage={this.filterByPage}
-                />
-                </div>
-                <hr/>
                 <div className={"row text-center justify-content-center"}>
                     <h6>Genre Filter</h6>
                     <div className={"row justify-content-center"}
@@ -122,7 +95,7 @@ class Books extends Component {
                             <SingleSelect name={"authorName"}
                                           value={""}
                                           authorOptions={this.state.authorOptions}
-                                          authorOptionsIndexes={this.state.authorOptionsIndexes}
+                                          authorOptionsIndexes={this.state.authorOptions}
                                           onAuthorChange={this.onAuthorChange}
                                           isMulti={true}
                             />
@@ -132,7 +105,7 @@ class Books extends Component {
                 <hr/>
                 <button className={"btn btn-outline-secondary"}
                         style={{width: "100%"}}
-                        onClick={()=>this.props.onFilter(this.state.selectedAuthorsIndexes, this.state.search, this.state.selectedMinPages, this.state.selectedMaxPages, this.state.selectedGenres)}
+                        onClick={()=>this.props.onFilter(this.state.selectedAuthors, this.state.search, this.state.selectedGenres)}
                 >
                     Filter
                 </button>

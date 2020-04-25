@@ -16,10 +16,8 @@ class Books extends Component {
             page: 0,
             pageSize: 3,
             totalPages: 0,
-            authorIds: [],
+            authors: [],
             search: "",
-            numberPagesFrom: 0,
-            numberPagesTo: 0,
             genres: [],
             sortBy: ""
         }
@@ -37,15 +35,11 @@ class Books extends Component {
 
     fetchBooks = (page = this.state.page,
                   size = this.state.pageSize,
-                  authors = this.state.authorIds,
+                  authors = this.state.authors,
                   search = this.state.search,
-                  minPages = this.state.numberPagesFrom,
-                  maxPages = this.state.numberPagesTo,
-                  genres = this.state.genres,
-                  read = this.state.read,
-                  favourite = this.state.favourite
+                  genres = this.state.genres
                   ) => {
-        axios.get(`http://localhost:8080/api/books?authorIds=${authors}&genres=${genres}&search=${search}&numberPagesFrom=${minPages}&numberPagesTo=${maxPages}&read=${read}&favourite=${favourite}&page=${page}&pageSize=${size}&sort=${this.state.sortBy}`)
+        axios.get(`http://localhost:8080/api/books?authors=${authors}&genres=${genres}&search=${search}&page=${page}&pageSize=${size}&sort=${this.state.sortBy}`)
             .then(response => {
                 console.log(response);
                 this.setState({ List: response.data.content,
@@ -58,8 +52,8 @@ class Books extends Component {
     };
 
     componentDidMount() {
-        //this.fetchBooks(0);
-        this.fetchAllBooks();
+        this.fetchBooks(0);
+        //this.fetchAllBooks();
     }
 
     onDeleteElement = (bookISBN) => {
@@ -72,12 +66,10 @@ class Books extends Component {
             .catch(error => console.log(error.response))
     };
 
-    onFilter = (authors, search, minPages, maxPages, genres) => {
+    onFilter = (authors, search, genres) => {
         this.setState({
-            authorIds: authors,
+            authors: authors,
             search: search,
-            numberPagesFrom: minPages,
-            numberPagesTo: maxPages,
             genres: genres
         }, function() {
             this.fetchBooks(0);
@@ -94,7 +86,7 @@ class Books extends Component {
     handlePageClick = (pageChangedEvent) => {
         this.fetchBooks(pageChangedEvent.selected);
     };
-/*
+
     renderPaginate = () =>
         <ReactPaginate previousLabel={'← Previous'}
                        nextLabel={'Next →'}
@@ -102,7 +94,7 @@ class Books extends Component {
                        breakClassName={'break-me'}
                        pageCount={this.state.totalPages}
                        marginPagesDisplayed={2}
-                       pageRangeDisplayed={3}
+                       pageRangeDisplayed={5}
                        pageClassName={'page-item'}
                        pageLinkClassName={'page-link btn'}
                        previousClassName={'page-item'}
@@ -116,7 +108,7 @@ class Books extends Component {
                        activeLinkClassName={'active bg-secondary border-secondary'}
                        disabledClassName={"disabled"}
         />;
-*/
+
     render() {
         const newList = this.state.List.map(book =>
             <Book ISBN={book.isbn}
@@ -137,22 +129,6 @@ class Books extends Component {
                     <Filters onFilter={this.onFilter}/>
                 </div>
                 <div className={"col-md-9"}>
-                    {this.state.read
-                        ?
-                        <div className={"row pl-3"}>
-                            <h4>Read Books</h4>
-                        </div>
-                        :
-                        <span></span>
-                    }
-                    {this.state.favourite
-                        ?
-                        <div className={"row pl-3"}>
-                            <h4>Favourite Books</h4>
-                        </div>
-                        :
-                        <span></span>
-                    }
                 <div className="row m-0 mb-3 p-3" style={{backgroundColor: "whitesmoke"}}>
                     {this.state.List.length > 0 ?
                         <div className={"text-right"} style={{flex: "auto"}}>
@@ -186,15 +162,14 @@ class Books extends Component {
                                 )}
                             </ButtonToolbar>
                             <Link to={"/books/new"}>
-                                <button className="btn btn-outline-secondary ml-2"
-                                hidden={this.state.read || this.state.favourite}>
+                                <button className="btn btn-outline-secondary ml-2">
                                     <span><strong>Add new book</strong></span>
                                 </button>
                             </Link>
                             <div style={{width: "100%"}}>
                                 {newList}
                                 <div className={"mt-4"}>
-
+                                    {this.renderPaginate()}
                                 </div>
                             </div>
                         </div>
@@ -207,9 +182,7 @@ class Books extends Component {
                             <br/>
                             <div className={"row text-right"} style={{display: "block", flex: "auto"}}>
                                 <Link to={"/books/new"}>
-                                    <button className="btn btn-outline-secondary"
-                                            hidden={this.state.read || this.state.favourite}
-                                    >
+                                    <button className="btn btn-outline-secondary">
                                         <span><strong>Add new book</strong></span>
                                     </button>
                                 </Link>
