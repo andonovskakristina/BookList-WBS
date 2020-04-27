@@ -11,11 +11,6 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.StyledEditorKit;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -28,48 +23,35 @@ public class BookApiController {
     public BookApiController(BookService bookService) {
         this.bookService = bookService;
     }
-/*
+
     @PostMapping()
     public Book createNewBook(@RequestParam(value="ISBN") String ISBN,
                               @RequestParam(value="title") String title,
                               @RequestParam(value="publicationDate") String publicationDate,
                               @RequestParam(value="author") String author,
-                              @RequestParam(value="review") double review,
                               @RequestParam(value="numberPages") int numberPages,
                               @RequestParam(value="description") String description,
                               @RequestParam(value="genres") String[] genres,
                               @RequestParam(value="imageUrl") String imageUrl){
 
-        Book result = bookService.create(new Book(ISBN, title, publicationDate, author, review, numberPages, description, "", false, false, imageUrl, genres));
-        return result;
-    }
-
-    @PatchMapping("/{id}/markAsRead")
-    public Book markAsRead(@PathVariable String id) {
-        return bookService.markAsRead(id);
-    }
-
-    @PatchMapping("/{id}/updateFavourites")
-    public Book updateFavourites(@PathVariable String id) {
-        return bookService.updateFavourites(id);
+        return bookService.create(ISBN, title, author, genres, numberPages, publicationDate,
+                description, imageUrl);
     }
 
     @PatchMapping("/{id}")
     public Book editBook(@PathVariable String id,
                          @RequestParam(value="title") String title,
                          @RequestParam(value="publicationDate") String publicationDate,
-                         @RequestParam(value="author") int authorId,
-                         @RequestParam(value="review") double review,
+                         @RequestParam(value="author") String author,
                          @RequestParam(value="numberPages") int numberPages,
                          @RequestParam(value="description") String description,
-                         @RequestParam(value="genres") List<Genre> genres,
+                         @RequestParam(value="genres") String[] genres,
                          @RequestParam(value="imageUrl") String imageUrl){
 
-        Book old = bookService.get(id);
-        Book result = bookService.edit(id, new Book(id, title, LocalDate.parse(publicationDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), authorService.get(authorId), review, numberPages, description, old.getComment(), old.isRead(), old.isFavourite(), imageUrl, genres));
-        return result;
+        return bookService.edit(id, title, author, genres, numberPages, publicationDate,
+                description, imageUrl);
     }
-*/
+
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable String id){
         bookService.delete(id);
@@ -106,34 +88,4 @@ public class BookApiController {
         return bookService.getAllBooksByPageAndFilters(search, authors, genres, pageable);
 
     }
-
-/*
-    @GetMapping()
-    public Page<Book> getAllBooks(@RequestParam(value = "authorIds",
-                                            required = false) int[] authorIds,
-                                  @RequestParam(value = "genres",
-                                          required = false) String[] genres,
-                                  @RequestParam(value = "search",
-                                          required = false) String search,
-                                  @RequestParam(value = "numberPagesFrom",
-                                          required = false,
-                                          defaultValue = "0") int numberPagesFrom,
-                                  @RequestParam(value = "numberPagesTo",
-                                          required = false,
-                                          defaultValue = "0") int numberPagesTo,
-                                  @RequestParam(value = "read",
-                                          required = false, defaultValue = "false")
-                                              boolean read,
-                                  @RequestParam(value = "favourite",
-                                          required = false, defaultValue = "false")
-                                              boolean favourite,
-                                  @PageableDefault(page = 0, size = 3, sort = {"title"}) Pageable pageable){
-        return bookService.getAllBooksByPageAndFilters(authorIds, genres, search, numberPagesFrom, numberPagesTo, read, favourite, pageable);
-
-    }
-
-    @GetMapping("/minMaxNumberPages")
-    public int[] getMinMaxNumberPages(){
-        return bookService.getMinMaxNumberPages();
-    }*/
 }

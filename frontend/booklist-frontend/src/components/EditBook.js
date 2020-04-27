@@ -14,8 +14,7 @@ class EditBook extends Component {
             ISBN: this.props.match.params.ISBN,
             title: "",
             publicationDate: "",
-            authorId: 0,
-            review: 0,
+            author: 0,
             numberPages: 0,
             imageUrl: "",
             genres: "",
@@ -23,7 +22,6 @@ class EditBook extends Component {
             oldState: {},
             authorOptions: [],
             genreOptions: [],
-            authorOptionsIndexes: [],
             notFound: false,
             selectedGenres: []
         }
@@ -36,14 +34,13 @@ class EditBook extends Component {
                 this.setState({
                     title: response.data.title,
                     publicationDate: response.data.publicationDate,
-                    authorId: response.data.authorId,
+                    author: response.data.author,
                     authorName: response.data.authorName,
-                    review: response.data.review,
                     numberPages: response.data.numberPages,
                     imageUrl: response.data.imageUrl,
-                    genres: response.data.bookGenres,
+                    genres: response.data.genres,
                     description: response.data.description,
-                    selectedGenres: response.data.bookGenres.split(',').map((name) => ({
+                    selectedGenres: response.data.genres.split(',').map((name) => ({
                         label: name,
                         value: name
                     })),
@@ -52,12 +49,11 @@ class EditBook extends Component {
                         "ISBN": this.state.ISBN,
                         "title": response.data.title,
                         "publicationDate": response.data.publicationDate,
-                        "authorId": response.data.authorId,
+                        "author": response.data.author,
                         "authorName": response.data.authorName,
-                        "review": response.data.review,
                         "numberPages": response.data.numberPages,
                         "imageUrl": response.data.imageUrl,
-                        "genres": response.data.bookGenres,
+                        "genres": response.data.genres,
                         "description": response.data.description
                     }
                 })
@@ -67,19 +63,18 @@ class EditBook extends Component {
                 this.setState({notFound: true});
             });
 
-        axios.get("http://localhost:8080/api/authors")
+        axios.get("http://localhost:8080/api/books/allAuthors")
             .then(response => {
-                this.setState({authorOptions: response.data.content.map(author => author.name)});
-                this.setState({authorOptionsIndexes: response.data.content.map(author => author.id)});
+                this.setState({authorOptions: response.data});
                 console.log(response);
             })
             .catch(error => {
                 console.log(error);
             });
 
-        axios.get("http://localhost:8080/api/genres")
+        axios.get("http://localhost:8080/api/books/allGenres")
             .then(response => {
-                this.setState({genreOptions: response.data.map(genre => genre.name)});
+                this.setState({genreOptions: response.data});
                 console.log(response);
             })
             .catch(error => {
@@ -88,8 +83,6 @@ class EditBook extends Component {
     }
 
     onInputChange = (e) => {
-        if (e.target.name === "review" && e.target.value > 5.00)
-            e.target.value = 5.00;
         this.setState({[e.target.name]: e.target.value});
     };
 
@@ -100,7 +93,7 @@ class EditBook extends Component {
     onAuthorChange = (value) => {
         var index = value[0].value;
         var authorName = value[0].label;
-        this.setState({authorId: index});
+        this.setState({author: index});
     };
 
     onDateChange = (value) => {
@@ -111,8 +104,7 @@ class EditBook extends Component {
         this.setState({
             title: this.state.oldState.title,
             publicationDate: this.state.oldState.publicationDate,
-            authorId: this.state.oldState.authorId,
-            review: this.state.oldState.review,
+            author: this.state.oldState.author,
             numberPages: this.state.oldState.numberPages,
             imageUrl: this.state.oldState.imageUrl,
             genres: this.state.oldState.genres
@@ -127,8 +119,7 @@ class EditBook extends Component {
         newBook.set('ISBN', this.state.ISBN);
         newBook.set('title', this.state.title);
         newBook.set('publicationDate', this.state.publicationDate);
-        newBook.set('author', this.state.authorId);
-        newBook.set('review', this.state.review);
+        newBook.set('author', this.state.author);
         newBook.set('numberPages', this.state.numberPages);
         newBook.set('description', this.state.description);
         newBook.set('genres', this.state.genres);
@@ -148,24 +139,8 @@ class EditBook extends Component {
     };
 
     validateInputs() {
-        if (!this.state.publicationDate) {
-            date = Date.now();
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            var date = [year, month, day].join('-');
-            this.setState({publicationDate: date});
-        }
-
         if (!this.state.title || !this.state.publicationDate || !this.state.numberPages ||
-            !this.state.review || !this.state.description || !this.state.authorId || !this.state.genres || !this.state.imageUrl)
+            !this.state.description || !this.state.author || !this.state.genres || !this.state.imageUrl)
             document.getElementById("errorMessage").hidden = false;
         else
             document.getElementById("errorMessage").hidden = true;
@@ -208,9 +183,9 @@ class EditBook extends Component {
                                 <SingleSelect name={"authorName"}
                                               value={""}
                                               selectedAuthor={{label: this.state.authorName,
-                                                  value: this.state.authorId}}
+                                                  value: this.state.author}}
                                               authorOptions={this.state.authorOptions}
-                                              authorOptionsIndexes={this.state.authorOptionsIndexes}
+                                              authorOptionsIndexes={this.state.authorOptions}
                                               onAuthorChange={this.onAuthorChange}/>
                                 <MultipleSelect name={"genres"}
                                                 genreOptions={this.state.genreOptions}
@@ -225,15 +200,6 @@ class EditBook extends Component {
                                        onChange={this.onInputChange}
                                        defaultValue={this.state.numberPages}
                                        value={this.state.numberPages}/>
-                                <input type={"number"}
-                                       step={".01"}
-                                       max={"5.00"}
-                                       name={"review"}
-                                       placeholder={"Book review"}
-                                       className={"form-control my-2"}
-                                       onChange={this.onInputChange}
-                                       defaultValue={this.state.review}
-                                       value={this.state.review}/>
                                 <input type={"text"}
                                        name={"imageUrl"}
                                        placeholder={"Image Url"}
@@ -241,6 +207,13 @@ class EditBook extends Component {
                                        onChange={this.onInputChange}
                                        defaultValue={this.state.imageUrl}
                                        value={this.state.imageUrl}/>
+                                <input type={"text"}
+                                       name={"publicationDate"}
+                                       placeholder={"Publication Date"}
+                                       className={"form-control my-2"}
+                                       onChange={this.onInputChange}
+                                       defaultValue={this.state.publicationDate}
+                                       value={this.state.publicationDate}/>
                                 <textarea type={"text"}
                                           name={"description"}
                                           placeholder={"Book description"}
@@ -248,15 +221,6 @@ class EditBook extends Component {
                                           onChange={this.onInputChange}
                                           defaultValue={this.state.description}
                                           value={this.state.description}/>
-                                <div className={"text-left my-2"}
-                                     style={{color: "#495057"}}>Publication Date:
-                                    <DatePickerr
-                                        name={"publicationDate"}
-                                        onChange={this.onInputChange}
-                                        onDateChange={this.onDateChange}
-                                        selectedDate={this.state.publicationDate}
-                                    />
-                                </div>
                                 <h6 className={"text-danger text-left"}
                                     hidden={true}
                                     id={"errorMessage"}>All Fields Are

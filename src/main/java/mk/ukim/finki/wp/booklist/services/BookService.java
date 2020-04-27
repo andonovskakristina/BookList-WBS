@@ -9,9 +9,11 @@ import java.util.List;
 
 @Service
 public interface BookService {
-    /*Book create(Book book);
+    Book create(String ISBN, String title, String author, String[] genres, int numberPages,
+                String publicationDate, String description, String imageUrl);
 
-    Book edit(String id, Book book);*/
+    Book edit(String ISBN, String title, String author, String[] genres, int numberPages,
+                String publicationDate, String description, String imageUrl);
 
     void delete(String id);
 

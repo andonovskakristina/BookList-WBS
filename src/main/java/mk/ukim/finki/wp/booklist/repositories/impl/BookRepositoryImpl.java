@@ -103,7 +103,7 @@ public class BookRepositoryImpl implements BookRepository {
         openConnection("qeBookNames", "select ?s\n" +
                 "where {\n" +
                 "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/isbn>)\n" +
-                "} limit 20");
+                "}");
         ResultSet results = qeBookNames.execSelect();
 
         return results;
@@ -366,12 +366,6 @@ public class BookRepositoryImpl implements BookRepository {
         openConnection("qeISBN", "select ?s ?p ?o \n" +
                 "where {?s ?p ?o filter (?o=\""+isbn+"\" )  }");
 
-        String kveri = "select ?s ?p ?o \n" +
-        "where {?s ?p ?o filter (?o=\""+isbn+"\" )  }";
-
-//System.out.println(kveri);
-
-        String x = "";
         ResultSet name = qeISBN.execSelect();
         try
         {  QuerySolution qs = name.next();
@@ -385,20 +379,49 @@ public class BookRepositoryImpl implements BookRepository {
         }
     }
 
-
-
    @Override
     public void deleteById(String id){
-
         String tuple = findTitleByIsbn(id).split("s = ")[1];
-       String queryString = "delete {?s ?p ?o}" +
+        String queryString = "delete {?s ?p ?o}" +
                 " where {?s ?p ?o filter(?s="+tuple+"}";
 
-       System.out.println(queryString);
+        System.out.println(queryString);
 
-       UpdateRequest request = UpdateFactory.create(queryString) ;
-       UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, "http://localhost:3030/Books/update") ;
-
+        UpdateRequest request = UpdateFactory.create(queryString) ;
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, "http://localhost:3030/Books/update") ;
+        proc.execute();
    }
 
+    @Override
+    public void create(String ISBN, String title, String author, String[] genres, int numberPages, String publicationDate, String description, String imageUrl) {
+        title = formatStringFilter(title);
+        author = formatStringFilter(author);
+
+        String query = "insert data { " +
+                "<http://dbpedia.org/resource/"+ title +"> <http://dbpedia.org/ontology/isbn> \""+ ISBN +"\";\n" +
+                "<http://dbpedia.org/ontology/author> <http://dbpedia.org/resource/"+ author +">; \n" +
+                "<http://dbpedia.org/ontology/numberOfPages> \"" + numberPages + "\"; \n " +
+                "<http://dbpedia.org/property/releaseDate> \"" + publicationDate + "\"; \n " +
+                "<http://dbpedia.org/ontology/abstract> \"" + description + "\"; \n " +
+                "<http://dbpedia.org/ontology/thumbnail> \"" + imageUrl + "\"; \n ";
+
+        for (int i = 0; i < genres.length; i++) {
+            genres[i] = formatStringFilter(genres[i]);
+            query += "<http://dbpedia.org/ontology/literaryGenre> \"" + genres[i] + "\" ";
+            if(i != genres.length - 1)
+                query += ";\n ";
+        }
+
+        query += ".\n }";
+
+        UpdateRequest request = UpdateFactory.create(query) ;
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, "http://localhost:3030/Books/update") ;
+        proc.execute();
+    }
+
+    @Override
+    public void edit(String ISBN, String title, String author, String[] genres, int numberPages, String publicationDate, String description, String imageUrl) {
+        deleteById(ISBN);
+        create(ISBN, title, author, genres, numberPages, publicationDate, description, imageUrl);
+    }
 }

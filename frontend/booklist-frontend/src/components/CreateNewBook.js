@@ -14,34 +14,29 @@ class CreateNewBook extends Component{
             ISBN: "",
             title: "",
             publicationDate: "",
-            authorId: 0,
-            review: 0,
+            author: "",
             description: "",
             numberPages: 0,
             imageUrl: "",
-            read: false,
-            favourite: false,
             genres: "",
             authorOptions: [],
-            genreOptions: [],
-            authorOptionsIndexes: []
+            genreOptions: []
         }
     }
 
     componentDidMount() {
-        axios.get("http://localhost:8080/api/authors/allAuthors")
+        axios.get("http://localhost:8080/api/books/allAuthors")
             .then(response => {
-                this.setState({authorOptions: response.data.map(author => author.name)});
-                this.setState({authorOptionsIndexes: response.data.map(author => author.id)});
+                this.setState({authorOptions: response.data});
                 console.log(response);
             })
             .catch(error => {
                 console.log(error);
             });
 
-        axios.get("http://localhost:8080/api/genres")
+        axios.get("http://localhost:8080/api/books/allGenres")
             .then(response => {
-                this.setState({genreOptions: response.data.map(genre => genre.name)});
+                this.setState({genreOptions: response.data});
                 console.log(response);
             })
             .catch(error => {
@@ -57,8 +52,7 @@ class CreateNewBook extends Component{
         newBook.set('ISBN', this.state.ISBN);
         newBook.set('title', this.state.title);
         newBook.set('publicationDate', this.state.publicationDate);
-        newBook.set('author', this.state.authorId);
-        newBook.set('review', this.state.review);
+        newBook.set('author', this.state.author);
         newBook.set('numberPages', this.state.numberPages);
         newBook.set('description', this.state.description);
         newBook.set('genres', this.state.genres);
@@ -84,12 +78,10 @@ class CreateNewBook extends Component{
     onAuthorChange = (value) => {
         var index = value[0].value;
         var authorName = value[0].label;
-        this.setState({authorId: index});
+        this.setState({author: index});
     };
 
     onInputChange = (e) => {
-        if(e.target.name === "review" && e.target.value > 5.00)
-            e.target.value = 5.00;
         this.setState({[e.target.name]: e.target.value});
     };
 
@@ -114,8 +106,8 @@ class CreateNewBook extends Component{
             this.setState({publicationDate: date});
         }
 
-        if(!this.state.ISBN || !this.state.title || !this.state.publicationDate || !this.state.numberPages ||
-        !this.state.review || !this.state.description || !this.state.authorId || !this.state.genres || !this.state.imageUrl)
+        if(!this.state.ISBN || !this.state.title || !this.state.publicationDate || !this.state.numberPages
+        || !this.state.description || !this.state.author || !this.state.genres || !this.state.imageUrl)
             document.getElementById("errorMessage").hidden = false;
         else
             document.getElementById("errorMessage").hidden = true;
@@ -147,7 +139,7 @@ class CreateNewBook extends Component{
                     <SingleSelect name={"authorName"}
                                   value={""}
                                   authorOptions={this.state.authorOptions}
-                                  authorOptionsIndexes={this.state.authorOptionsIndexes}
+                                  authorOptionsIndexes={this.state.authorOptions}
                                   onAuthorChange={this.onAuthorChange}
                                   isMulti={false}/>
                     <MultipleSelect name={"genres"}
@@ -157,13 +149,6 @@ class CreateNewBook extends Component{
                            name={"numberPages"}
                            pattern="[0-9]*"
                            placeholder={"Number of Pages"}
-                           className={"form-control my-2"}
-                           onChange={this.onInputChange}/>
-                    <input type={"number"}
-                           step={".01"}
-                           max={"5.00"}
-                           name={"review"}
-                           placeholder={"Book review"}
                            className={"form-control my-2"}
                            onChange={this.onInputChange}/>
                     <input type={"text"}

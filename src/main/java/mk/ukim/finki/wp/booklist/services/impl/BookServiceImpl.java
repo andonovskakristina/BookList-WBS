@@ -19,17 +19,41 @@ import java.util.*;
 public class BookServiceImpl implements BookService {
     @Autowired
     BookRepository bookRepository;
-    /*private BookRepository bookRepository;
 
-    public BookServiceImpl(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }*/
-/*
     @Override
-    public Book create(Book book) {
-        checkUniqueId(book);
-        return bookRepository.save(book);
+    public Book create(String ISBN, String title, String author, String[] genres, int numberPages, String publicationDate, String description, String imageUrl) {
+        if(bookRepository.existsById(ISBN))
+            throw new ApiException("The book already exists.");
+
+        bookRepository.create(ISBN, title, author, genres, numberPages, publicationDate,
+                description, imageUrl);
+
+        String genresConcat = "";
+        for (int i = 0; i < genres.length; i++) {
+            genresConcat += genres[i];
+        }
+
+        return new Book(ISBN, title, author, genresConcat, numberPages, publicationDate,
+                description, imageUrl);
     }
+
+    public Book edit(String ISBN, String title, String author, String[] genres, int numberPages, String publicationDate, String description, String imageUrl) {
+        if(!bookRepository.existsById(ISBN))
+            throw new ApiException("The book doesn't exist.");
+
+        bookRepository.edit(ISBN, title, author, genres, numberPages, publicationDate,
+                description, imageUrl);
+
+        String genresConcat = "";
+        for (int i = 0; i < genres.length; i++) {
+            genresConcat += genres[i];
+        }
+
+        return new Book(ISBN, title, author, genresConcat, numberPages, publicationDate,
+                description, imageUrl);
+    }
+
+/*
 
     @Override
     public Book edit(String id, Book book) {

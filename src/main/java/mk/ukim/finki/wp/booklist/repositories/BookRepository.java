@@ -42,4 +42,10 @@ public interface BookRepository {
     ResultSet findAllBookGenres();
 
     void deleteById(String id);
+
+    void create(String ISBN, String title, String author, String[] genres, int numberPages,
+                String publicationDate, String description, String imageUrl);
+
+    void edit(String ISBN, String title, String author, String[] genres, int numberPages,
+                String publicationDate, String description, String imageUrl);
 }
