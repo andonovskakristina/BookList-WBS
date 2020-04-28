@@ -23,16 +23,6 @@ class Books extends Component {
         }
     }
 
-    fetchAllBooks = () => {
-        axios.get(`http://localhost:8080/api/books/allBooks`)
-            .then(response => {
-                console.log(response);
-                this.setState({ List: response.data
-                });
-            })
-            .catch(error => console.log(error.response))
-    };
-
     fetchBooks = (page = this.state.page,
                   size = this.state.pageSize,
                   authors = this.state.authors,
@@ -53,7 +43,6 @@ class Books extends Component {
 
     componentDidMount() {
         this.fetchBooks(0);
-        //this.fetchAllBooks();
     }
 
     onDeleteElement = (bookISBN) => {
@@ -143,9 +132,9 @@ class Books extends Component {
                                             key={variant}
                                         >
                                             <Dropdown.Item href=""
-                                                           name={"review"}
+                                                           name={"title"}
                                                            onClick={this.sortBy}>
-                                                Review
+                                                Title
                                             </Dropdown.Item>
                                             <Dropdown.Item href=""
                                                            name={"numberPages"}

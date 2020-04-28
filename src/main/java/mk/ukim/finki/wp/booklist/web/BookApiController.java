@@ -84,8 +84,8 @@ public class BookApiController {
                                           required = false) String[] genres,
                                   @RequestParam(value = "search",
                                           required = false) String search,
-                                  @PageableDefault(page = 0, size = 5, sort = {"title"}) Pageable pageable){
+                                  @PageableDefault(page = 0, size = 5, sort = {"title"})
+                                                      Pageable pageable){
         return bookService.getAllBooksByPageAndFilters(search, authors, genres, pageable);
-
     }
 }

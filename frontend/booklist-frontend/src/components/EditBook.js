@@ -4,7 +4,6 @@ import axios from "axios";
 import backgroundImage from "../images/createNewBackground.jpg";
 import SingleSelect from "./SingleSelect";
 import MultipleSelect from "./MultipleSelect";
-import DatePickerr from "./DatePicker";
 import PageNotFound from "./PageNotFound";
 
 class EditBook extends Component {
@@ -28,6 +27,7 @@ class EditBook extends Component {
     };
 
     componentDidMount() {
+        console.log("cdm");
         axios.get(`http://localhost:8080/api/books/${this.state.ISBN}`)
             .then(response => {
                 console.log(response);
@@ -182,7 +182,7 @@ class EditBook extends Component {
                                        value={this.state.title}/>
                                 <SingleSelect name={"authorName"}
                                               value={""}
-                                              selectedAuthor={{label: this.state.authorName,
+                                              selectedAuthor={{label: this.state.author,
                                                   value: this.state.author}}
                                               authorOptions={this.state.authorOptions}
                                               authorOptionsIndexes={this.state.authorOptions}

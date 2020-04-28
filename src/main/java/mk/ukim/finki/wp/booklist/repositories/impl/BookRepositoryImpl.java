@@ -63,6 +63,8 @@ public class BookRepositoryImpl implements BookRepository {
         else if(qe.equals("qeBookGenres"))
             qeBookGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
+
+        System.out.println("Open: " + qe);
     }
 
     @Override
@@ -89,6 +91,8 @@ public class BookRepositoryImpl implements BookRepository {
             qeBookAuthors.close();
         else if(qe.equals("qeBookGenres"))
             qeBookGenres.close();
+
+        System.out.println("Close: " + qe);
     }
 
     @Override
@@ -103,7 +107,7 @@ public class BookRepositoryImpl implements BookRepository {
         openConnection("qeBookNames", "select ?s\n" +
                 "where {\n" +
                 "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/isbn>)\n" +
-                "}");
+                "} group by ?s");
         ResultSet results = qeBookNames.execSelect();
 
         return results;
@@ -286,20 +290,21 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public boolean existsById(String id) {
-        openConnection("qeISBN", "select ?o\n" +
-                "where {\n" +
+        openConnection("qeISBN", "select *\n" +
+                " where {\n" +
                 "  ?s ?p ?o filter (?o=\""+id+"\"&&?p=<http://dbpedia.org/ontology/isbn>)\n" +
                 "}");
         ResultSet results = qeISBN.execSelect();
         try
         {
             QuerySolution qs = results.next();
+            closeConnection("qeISBN");
             return true;
         }
         catch (Exception e) {
+            closeConnection("qeISBN");
             return false;
         }
-
     }
 
     @Override
@@ -393,7 +398,8 @@ public class BookRepositoryImpl implements BookRepository {
    }
 
     @Override
-    public void create(String ISBN, String title, String author, String[] genres, int numberPages, String publicationDate, String description, String imageUrl) {
+    public void create(String ISBN, String title, String author, String[] genres, int numberPages,
+                       String publicationDate, String description, String imageUrl) {
         title = formatStringFilter(title);
         author = formatStringFilter(author);
 
