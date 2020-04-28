@@ -2,12 +2,14 @@ import React, {Component} from 'react'
 import axios from "axios";
 import HomeImage from "../images/home.png"
 import BookCarousel from "./BookCarousel";
+import Footer from "./Footer";
 
 class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            books: []
+            books: [],
+            home:true
             /*bookNumberPages: [],
             bookReviews: [],
             genres: [],
@@ -44,21 +46,20 @@ class Home extends Component {
 
     render()
     {
-        const newList = this.state.books.map(x => <div> {this.state.books.title}</div> );
-
         return (
             <div style={{textAlign: "left !important", fontSize: "1rem !important"}} className={"bg-light"}>
                 <img src={HomeImage}
                      style={{width: "100%"}}
                      className={"mb-5"}
+                     alt={""}
                 />
-
                 <div className={"m-auto w-75 pb-5"}>
-                    <BookCarousel/>
+                    <BookCarousel home={true}/>
                 </div>
+                <Footer/>
             </div>
         )
     };
-};
+}
 
 export default Home;

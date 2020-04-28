@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping(path = "/api/books", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
 @Validated
 public class BookApiController {
-    private BookService bookService;
 
+    private BookService bookService;
     public BookApiController(BookService bookService) {
         this.bookService = bookService;
     }

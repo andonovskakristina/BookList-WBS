@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
-import BookCarousel from "./BookCarousel";
 import PageNotFound from "./PageNotFound";
+import BookCarousel from "./BookCarousel";
+import YouMayLikeBooks from "./YouMayLikeBooks";
 
 class BookDetails extends Component{
     constructor(props) {
@@ -17,6 +17,7 @@ class BookDetails extends Component{
             imageUrl: "",
             genres: "",
             notFound: false
+
         }
     }
 
@@ -36,6 +37,7 @@ class BookDetails extends Component{
                 console.log(error);
                 this.setState({notFound: true});
             });
+        console.log("fleva u details");
     }
 
     render() {
@@ -61,7 +63,7 @@ class BookDetails extends Component{
                                      className={"text-center"}>
                                     <div className={"row m-auto"}
                                          style={{width: "90%"}}>
-                                        <img src={this.state.imageUrl}
+                                        <img src={this.state.imageUrl} alt={""}
                                              style={{height: "300px", width: "200px"}}/>
                                     </div>
                                 </div>
@@ -100,8 +102,8 @@ class BookDetails extends Component{
                                     <div className={"row d-flex justify-content-start"}>
                                         <h5>You may also like</h5>
                                         <hr style={{border: "1px solid darkgray"}}/>
-                                        <div style={{width: "180px"}}>
-                                        </div>
+
+<YouMayLikeBooks/>
                                     </div>
                                 </div>
                             </div>

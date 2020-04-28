@@ -71,6 +71,7 @@ class EditBook extends Component {
             .catch(error => {
                 console.log(error);
             });
+        console.log("fleva edit")
 
         axios.get("http://localhost:8080/api/books/allGenres")
             .then(response => {
@@ -136,6 +137,7 @@ class EditBook extends Component {
                 this.props.history.push("/books");
             })
             .catch(error => console.log(error.response));
+        console.log("form za edit")
     };
 
     validateInputs() {
@@ -256,4 +258,4 @@ class EditBook extends Component {
     }
 }
 
-export default EditBook
+export default EditBook;

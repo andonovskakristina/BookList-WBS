@@ -32,6 +32,7 @@ class Books extends Component {
         axios.get(`http://localhost:8080/api/books?authors=${authors}&genres=${genres}&search=${search}&page=${page}&pageSize=${size}&sort=${this.state.sortBy}`)
             .then(response => {
                 console.log(response);
+                console.log("fleva u then na fetch all");
                 this.setState({ List: response.data.content,
                     page: response.data.pageable.pageNumber,
                     pageSize: response.data.pageable.pageSize,
@@ -52,7 +53,8 @@ class Books extends Component {
                 this.setState({ List: this.state.List.filter(l => l.isbn !== bookISBN)});
                 this.fetchBooks(0);
             })
-            .catch(error => console.log(error.response))
+            .catch(error => console.log(error.response));
+
     };
 
     onFilter = (authors, search, genres) => {
@@ -63,6 +65,7 @@ class Books extends Component {
         }, function() {
             this.fetchBooks(0);
         });
+        console.log("fleva filter");
     };
 
     sortBy = (e) => {
@@ -119,7 +122,7 @@ class Books extends Component {
                 </div>
                 <div className={"col-md-9"}>
                 <div className="row m-0 mb-3 p-3" style={{backgroundColor: "whitesmoke"}}>
-                    {this.state.List.length > 0 ?
+                    {   this.state.List.length > 0 ?
                         <div className={"text-right"} style={{flex: "auto"}}>
                             <ButtonToolbar style={{display: "inline-block"}}
                                            className={""}>

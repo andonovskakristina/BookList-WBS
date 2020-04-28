@@ -113,7 +113,7 @@ public class BookRepositoryImpl implements BookRepository {
         return results;
     }
 
-    String formatStringFilter(String string){
+    private String formatStringFilter(String string){
         return string.replace(" ", "_");
     }
 
@@ -163,9 +163,8 @@ public class BookRepositoryImpl implements BookRepository {
                 "  ?s ?p ?o." +
                 " filter ("+ query +")\n" +
                 "} group by ?s");
-        ResultSet results = qeAll.execSelect();
 
-        return results;
+        return qeAll.execSelect();
     }
 
     @Override

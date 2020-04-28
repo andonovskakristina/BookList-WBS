@@ -10,7 +10,8 @@ class BookCarousel extends Component {
             randomBooks: [],
             thisBookISBN: props.ISBN,
             booksByAuthor: props.booksByAuthor,
-            authorId: props.authorId
+            authorId: props.authorId,
+            home: true
         }
     }
 
@@ -24,7 +25,7 @@ class BookCarousel extends Component {
                 }
                 else {
                     this.setState({
-                        randomBooks: this.state.books.filter(book => book.authorId == this.props.authorId)
+                        randomBooks: this.state.books.filter(book => book.authorId === this.props.authorId)
                     });
                 }
             })
@@ -53,7 +54,7 @@ class BookCarousel extends Component {
 
     render() {
         var newList = [];
-        if(this.state.randomBooks.length > 0) {
+        if(this.state.randomBooks.length > 0  ) {
             newList = this.state.randomBooks.map(book =>
                 <Carousel.Item key={book.isbn}>
                     <img
@@ -68,6 +69,7 @@ class BookCarousel extends Component {
                     />
                 </Carousel.Item>)
         }
+
         return(
             <Carousel>
                 {newList}
@@ -76,4 +78,4 @@ class BookCarousel extends Component {
     }
 }
 
-export default BookCarousel
+export default BookCarousel;

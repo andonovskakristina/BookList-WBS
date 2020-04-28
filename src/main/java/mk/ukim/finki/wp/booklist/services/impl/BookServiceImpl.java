@@ -28,8 +28,8 @@ public class BookServiceImpl implements BookService {
                 description, imageUrl);
 
         String genresConcat = "";
-        for (int i = 0; i < genres.length; i++) {
-            genresConcat += genres[i];
+        for (String genre : genres) {
+            genresConcat += genre;
         }
 
         return new Book(ISBN, title, author, genresConcat, numberPages, publicationDate,
@@ -58,7 +58,7 @@ public class BookServiceImpl implements BookService {
     }
 
 
-    Book getBook(String name) {
+    private Book getBook(String name) {
         String isbn = bookRepository.findISBN(name);
         bookRepository.closeConnection("qeISBN");
 
@@ -84,22 +84,19 @@ public class BookServiceImpl implements BookService {
                 formatString(genres), formatNumberPages(numberPages), publicationDate, description, imageUrl);
     }
 
-    String formatString(String string){
-        if(string != "/") {
+    private String formatString(String string){
+        if(!string.equals("/")) {
             String[] arr = string.split("/");
             string = arr[arr.length - 1].replace("_", " ");
-            string.trim();
+
         }
-         return string;
+         return string.trim();
     }
 
-    int formatNumberPages(String numberPages) {
+    private int formatNumberPages(String numberPages) {
         return Integer.parseInt(numberPages.split("\\^")[0]);
     }
 
-    String formatDate(String date) {
-        return date.split("\"")[0];
-    }
 
     @Override
     public List<Book> getAllBooks() {
@@ -168,8 +165,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<String> findAllDistinctAuthors() {
-        List<String> authors = bookRepository.findAllDistinctAuthors();
-        return authors;
+        return bookRepository.findAllDistinctAuthors();
     }
 
     @Override

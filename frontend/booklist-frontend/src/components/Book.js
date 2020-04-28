@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import ModalWindow from "./ModalWindow";
+import "../css/suggestedBook.css";
 
 class Book extends Component{
     constructor(props) {
@@ -23,7 +24,7 @@ class Book extends Component{
     render() {
 
         return(
-            <div className={"container"}>
+            <div className={"container card-hover"}>
                 <div className={"row my-3 text-left pl-0"}
                      style={{backgroundColor: "lightgray"}}>
                     <div className={"col-md-3 pl-0"}>
