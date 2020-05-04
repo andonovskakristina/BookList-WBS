@@ -28,6 +28,7 @@ public class BookRepositoryImpl implements BookRepository {
     private QueryExecution qeImageUrl;
     private QueryExecution qeBookAuthors;
     private QueryExecution qeBookGenres;
+    private QueryExecution qeBooksByAuthor;
 
     public void openConnection(String qe, String query) {
         if(qe.equals("qeAll"))
@@ -63,6 +64,9 @@ public class BookRepositoryImpl implements BookRepository {
         else if(qe.equals("qeBookGenres"))
             qeBookGenres = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
                     query);
+        else if(qe.equals("qeBooksByAuthor"))
+            qeBooksByAuthor = QueryExecutionFactory.sparqlService("http://localhost:3030/Books/query",
+                    query);
 
         System.out.println("Open: " + qe);
     }
@@ -91,6 +95,8 @@ public class BookRepositoryImpl implements BookRepository {
             qeBookAuthors.close();
         else if(qe.equals("qeBookGenres"))
             qeBookGenres.close();
+        else if(qe.equals("qeBooksByAuthor"))
+            qeBooksByAuthor.close();
 
         System.out.println("Close: " + qe);
     }
@@ -364,6 +370,16 @@ public class BookRepositoryImpl implements BookRepository {
         return results;
     }
 
+    @Override
+    public ResultSet findBooksByAuthor(String author) {
+        openConnection("qeBooksByAuthor", "select ?s\n" +
+                "where {\n" +
+                "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/author>&&?o=<" + author + ">)\n" +
+                "}");
+        ResultSet results = qeBooksByAuthor.execSelect();
+
+        return results;
+    }
 
     public String findTitleByIsbn(String isbn){
 

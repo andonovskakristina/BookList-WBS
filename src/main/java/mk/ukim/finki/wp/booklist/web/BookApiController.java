@@ -1,5 +1,6 @@
 package mk.ukim.finki.wp.booklist.web;
 
+import mk.ukim.finki.wp.booklist.models.Author;
 import mk.ukim.finki.wp.booklist.models.Book;
 import mk.ukim.finki.wp.booklist.models.exceptions.ApiException;
 import mk.ukim.finki.wp.booklist.services.BookService;
@@ -75,6 +76,12 @@ public class BookApiController {
     @GetMapping("/allGenres")
     public List<String> getAllGenres(){
         return bookService.getAllGenres();
+    }
+
+    @GetMapping("/authors")
+    public Page<Author> getAuthors(@PageableDefault(page = 0, size = 10, sort = {"name"})
+                                               Pageable pageable){
+        return bookService.getAuthors(pageable);
     }
 
     @GetMapping()

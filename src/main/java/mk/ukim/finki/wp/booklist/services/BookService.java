@@ -1,5 +1,6 @@
 package mk.ukim.finki.wp.booklist.services;
 
+import mk.ukim.finki.wp.booklist.models.Author;
 import mk.ukim.finki.wp.booklist.models.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,8 @@ public interface BookService {
     List<String> getAllAuthors();
 
     List<String> getAllGenres();
+
+    Page<Author> getAuthors(Pageable pageable);
 
     Book get(String id);
 

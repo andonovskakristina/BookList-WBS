@@ -32,7 +32,6 @@ class Books extends Component {
         axios.get(`http://localhost:8080/api/books?authors=${authors}&genres=${genres}&search=${search}&page=${page}&pageSize=${size}&sort=${this.state.sortBy}`)
             .then(response => {
                 console.log(response);
-                console.log("fleva u then na fetch all");
                 this.setState({ List: response.data.content,
                     page: response.data.pageable.pageNumber,
                     pageSize: response.data.pageable.pageSize,

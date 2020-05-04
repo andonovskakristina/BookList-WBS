@@ -1,5 +1,6 @@
 package mk.ukim.finki.wp.booklist.services.impl;
 
+import mk.ukim.finki.wp.booklist.models.Author;
 import mk.ukim.finki.wp.booklist.models.Book;
 import mk.ukim.finki.wp.booklist.models.exceptions.ApiException;
 import mk.ukim.finki.wp.booklist.repositories.BookRepository;
@@ -166,6 +167,44 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<String> findAllDistinctAuthors() {
         return bookRepository.findAllDistinctAuthors();
+    }
+
+    @Override
+    public Page<Author> getAuthors(Pageable pageable) {
+        ResultSet rsAuthors = bookRepository.findAllBookAuthors();
+
+        List<Author> authors = new ArrayList<>();
+
+        while ( rsAuthors.hasNext() ) {
+            final QuerySolution qs = rsAuthors.next();
+            if((qs.get("o")) != null) {
+                String name = (qs.get("o")).toString();
+
+                ResultSet rsBookNames = bookRepository.findBooksByAuthor(name);
+                List<String> books = new ArrayList<>();
+
+                while ( rsBookNames.hasNext() ) {
+                    final QuerySolution qs_temp = rsBookNames.next();
+                    if((qs_temp.get("s")) != null) {
+                        String bookName = (qs_temp.get("s")).toString();
+
+                        books.add(formatString(bookName));
+                    }
+                    else break;
+                }
+                bookRepository.closeConnection("qeBooksByAuthor");
+
+                Author a = new Author(formatString(name), books);
+                authors.add(a);
+            }
+            else break;
+        }
+        bookRepository.closeConnection("qeBookAuthors");
+
+        int start = (int) pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > authors.size() ? authors.size() : (start + pageable.getPageSize());
+
+        return new PageImpl<Author>(authors.subList(start, end), pageable, authors.size());
     }
 
     @Override

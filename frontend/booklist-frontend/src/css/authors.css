@@ -1,7 +1,4 @@
-#btns {
-    display: none;
-}
-
-#proba:hover #btns {
-    display: inline-block;
+tr:nth-of-type(odd) > td,
+td[rowspan] {
+    background: #f00;
 }

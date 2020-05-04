@@ -41,6 +41,8 @@ public interface BookRepository {
 
     ResultSet findAllBookGenres();
 
+    ResultSet findBooksByAuthor(String author);
+
     void deleteById(String id);
 
     void create(String ISBN, String title, String author, String[] genres, int numberPages,
