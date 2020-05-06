@@ -53,7 +53,6 @@ class Books extends Component {
                 this.fetchBooks(0);
             })
             .catch(error => console.log(error.response));
-
     };
 
     onFilter = (authors, search, genres) => {
@@ -64,7 +63,6 @@ class Books extends Component {
         }, function() {
             this.fetchBooks(0);
         });
-        console.log("fleva filter");
     };
 
     sortBy = (e) => {

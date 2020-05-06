@@ -61,7 +61,8 @@ class BookCarousel extends Component {
                         className="d-block"
                         src={book.imageUrl}
                         alt={book.title}
-                        style={{width: "1000px", height: "500px",
+                        title={book.title}
+                        style={{width: "100%", maxHeight: "450px",
                         cursor: "pointer"}}
                         onClick={() =>{
                             window.location = `/books/${book.isbn}/details`;

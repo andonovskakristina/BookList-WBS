@@ -17,7 +17,6 @@ class BookDetails extends Component{
             imageUrl: "",
             genres: "",
             notFound: false
-
         }
     }
 
@@ -37,20 +36,9 @@ class BookDetails extends Component{
                 console.log(error);
                 this.setState({notFound: true});
             });
-        console.log("fleva u details");
     }
 
     render() {
-
-        /*var pom = this.state.genres.split(",");
-        var tableGenres = [];
-        for(var i = 0; i < pom.length; i++) {
-            tableGenres[i] = <tr className={"d-flex align-items-center pl-2"}
-                                 style={{borderTop: "1px solid darkgray", maxHeight: "40px", height: "40px"}} >
-                {pom[i]}
-            </tr>;
-        }*/
-
         return(
             <div>
                 {this.state.notFound === true ?

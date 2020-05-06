@@ -22,7 +22,12 @@ class SuggestedBooks extends Component{
                              style={{width: "70px", height: "100px"}}/>
                     </div>
                     <div className={"col-md-7 mt-3 pl-0 ml-3"}>
-                        <p>{this.state.title}</p>
+                        <p style={{textOverflow: "elipsis",
+                            overflow: "hidden",
+                            maxHeight: "50px",
+                            maxWidth: "105px"}}>
+                            {this.state.title}
+                        </p>
                             <div className={"mt-1"}>
                                 <a href={`/books/${this.state.ISBN}/details`}
                                       className="text-dark">

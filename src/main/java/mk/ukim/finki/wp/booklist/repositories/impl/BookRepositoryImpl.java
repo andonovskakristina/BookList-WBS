@@ -113,7 +113,7 @@ public class BookRepositoryImpl implements BookRepository {
         openConnection("qeBookNames", "select ?s\n" +
                 "where {\n" +
                 "  ?s ?p ?o filter (?p=<http://dbpedia.org/ontology/isbn>)\n" +
-                "} group by ?s");
+                "} ");
         ResultSet results = qeBookNames.execSelect();
 
         return results;
